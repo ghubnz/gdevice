@@ -5,6 +5,7 @@
 #include <ESP8266WiFi.h>
 
 #include "Config.h"
+#include "SetupService.h"
 
 #define HUB_AP_STATE_INIT 0
 #define HUB_AP_STATE_ERROR 0xff
@@ -22,7 +23,8 @@ class HubAP {
 		void setup();
 		void flashLED(int);
 		void add(uint8_t, StateHandler);
-		int call(char * api, char **pn, char **pv);
+		// int call(char * api, char **pn, char **pv);
+		void setState(uint8_t);
 	private:
 		uint8_t _state = HUB_AP_STATE_INIT;
 		uint8_t _macAddr[6];

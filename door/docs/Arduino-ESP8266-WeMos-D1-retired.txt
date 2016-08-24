@@ -1,3 +1,7 @@
+BTN		ESP8266 ONBOARD
+=======================
+PIN		GPIO3	D0
+
 SG90	ESP8266	ONBOARD
 =======================
 PWM		GPIO0	D8

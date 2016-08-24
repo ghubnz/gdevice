@@ -9,6 +9,9 @@ void HubAP::setup() {
 	// buildin LED
 	pinMode(HUB_AP_LED, OUTPUT);
 	digitalWrite(HUB_AP_LED, HIGH);
+	// setup button
+	SetupService setupService;
+	_state = setupService.loop();
 	// connect WiFi
 	_connectWiFi();
 }
@@ -25,8 +28,13 @@ void HubAP::add(uint8_t state, StateHandler f) {
 	_states[state] = f;
 }
 
+void HubAP::setState(uint8_t state) {
+	_state = state;
+}
+
 // Connect WiFi
 void HubAP::_connectWiFi() {
+	// TODO read SSID and Password from the eeprom
 	// Connect WiFi
 	WiFi.begin(HUB_AP_WIFI_SSID, HUB_AP_WIFI_PASS);
 	// Wait max to 30 seconds
@@ -46,7 +54,7 @@ void HubAP::flashLED(int d) {
 	digitalWrite(HUB_AP_LED, state);
 	delay(d/2);	
 }
-
+/*
 int HubAP::call(char api[], char p[]) {
 HTTPClient http;
 	http.begin("http://192.168.1.65:8080/echo"); //HTTP
@@ -59,4 +67,4 @@ HTTPClient http;
 	http.end();
 	return httpCode;	
 }
-
+*/
