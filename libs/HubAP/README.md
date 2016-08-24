@@ -19,6 +19,38 @@ AP can work under offline mode:
 
 The access permission is matched by the triple group (APID, PNID, DT).
 
-TODO: EEPROM structure, cache and transaction data
+TODO: EEPROM/FS structure, cache and transaction data
 TODO: Built-in Online/Offline status
 TODO: Common API design
+
+State
+=====
+
+AP has 3 states:
+
+ 1. Setup
+ 2. Online
+ 3. Offline
+
+Setup
+-----
+
+Setup mode only can be accessed when the AP is reset.
+It will open a WiFi AP with SSID: GHub, Passphrase: gribblehirst, and open an HTTP server to receive config options.
+
+TODO: Onboard config server API
+
+Online
+---------
+
+When the WiFi is connected, AP enters online mode.
+In this mode, the AP will read and write to the HUB directly.
+At the meanwhile, it also writes to the local cache as well.
+When entering the online mode, AP will send all cached logs to HUB and clean them from local storage.
+
+Offline
+---------
+
+When the WiFi is disconnected, AP enters offline mode.
+In this mode, the AP will read and write to the cache directly.
+At the meanwhile, it also tries to reconnect the WiFi.
