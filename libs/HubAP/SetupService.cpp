@@ -6,6 +6,7 @@ SetupService::SetupService() {
 }
 
 uint8_t SetupService::loop() {
+	// TODO read the eeprom, if the configration is empty or setup button was pressed down
 	if (digitalRead(HUB_AP_SETUP_BTN) == LOW) {
 		Serial.print("Button off");
 		return HUB_AP_STATE_INIT;
@@ -34,7 +35,7 @@ uint8_t SetupService::loop() {
 }
 
 void SetupService::_handleRoot() {
-	_server.send (200, "text/plain", "Hello world\n\n");	
+	_server.send (200, "text/html", "Hello world\n\n");	
 }
 
 void SetupService::_handleSet() {

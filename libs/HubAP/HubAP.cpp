@@ -9,6 +9,8 @@ void HubAP::setup() {
 	// buildin LED
 	pinMode(HUB_AP_LED, OUTPUT);
 	digitalWrite(HUB_AP_LED, HIGH);
+	// eeprom
+	EEPROM.begin(HUB_AP_EERPOM_SIZE);
 	// setup button
 	SetupService setupService;
 	_state = setupService.loop();
