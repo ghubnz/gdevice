@@ -33,11 +33,13 @@ void HubAP::setState(uint8_t state) {
 }
 
 // Connect WiFi
+// TODO if it reached the max waiting times, the AP will be in offline mode
 void HubAP::_connectWiFi() {
 	// TODO read SSID and Password from the eeprom
 	// Connect WiFi
 	WiFi.begin(HUB_AP_WIFI_SSID, HUB_AP_WIFI_PASS);
 	// Wait max to 30 seconds
+	// TODO Set the max waiting times
 	while (WiFi.waitForConnectResult() != WL_CONNECTED) {
 		Serial.printf("Waiting WiFi Connection: SSID=%s\n", HUB_AP_WIFI_SSID);		
 		flashLED(40);
