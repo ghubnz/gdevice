@@ -29,9 +29,9 @@ class HubAP {
 	private:
 		uint8_t _state = HUB_AP_STATE_INIT;
 		uint8_t _macAddr[6];
-		char _secKey[8];
 
 		StateHandler _states[UINT8_MAX] = { NULL };
+		Config _config;
 
 
 		void _connectWiFi();

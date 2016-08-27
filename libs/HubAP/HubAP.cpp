@@ -10,10 +10,10 @@ void HubAP::setup() {
 	pinMode(HUB_AP_LED, OUTPUT);
 	digitalWrite(HUB_AP_LED, HIGH);
 	// eeprom
-	EEPROM.begin(HUB_AP_EERPOM_SIZE);
+	_config = Config();
 	// setup button
-	SetupService setupService;
-	_state = setupService.loop();
+	SetupService setupService = SetupService(&_config);
+	setupService.loop();
 	// connect WiFi
 	_connectWiFi();
 }

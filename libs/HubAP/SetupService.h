@@ -8,21 +8,22 @@
 #include <ESP8266mDNS.h>
 
 #include "HubAP.h"
+#include "html.h"
 
 #define HUB_AP_SETUP_BTN 3
 
 // setup service class
 class SetupService {
 	public:
-		SetupService();
+		SetupService(Config *config);
 		
-		// call this in loop() and handle the return value
-		uint8_t loop();
+		void loop();
 	private:
 		void _handleRoot();
 		void _handleSet();
 		void _handleRestart();
 		void _handleNotFound();
+		Config * _config;
 
 		ESP8266WebServer _server = ESP8266WebServer(80);
 
