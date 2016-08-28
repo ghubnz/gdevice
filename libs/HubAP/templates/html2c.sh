@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 F=`mktemp`
 tr --delete "\n\t" < index.html  > $F
-STR=`sed 's/"/\\\\"/g' $F`
-T=`cat template.h`
-printf "$T" "$STR" > ../html.h
+ROOT=`sed 's/"/\\\\"/g' $F`
 rm $F
+
+F=`mktemp`
+tr --delete "\n\t" < card.html  > $F
+CARD=`sed 's/"/\\\\"/g' $F`
+rm $F
+
+T=`cat template.h`
+printf "$T" "$ROOT" "$CARD" > ../html.h
