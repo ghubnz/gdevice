@@ -1,0 +1,14 @@
+Pin			Function			ESP-8266 Pin
+D0			RX					GPIO3
+D1			TX					GPIO1
+D2			IO					GPIO16
+D3 (D15)	IO, SCL				GPIO5
+D4 (D14)	IO, SDA				GPIO4
+D5 (D13)	IO, SCK				GPIO14
+D6 (D12)	IO, MISO			GPIO12
+D7 (D11)	IO, MOSI			GPIO13
+D8			IO, Pull-up			GPIO0
+D9			IO, Pull-up			GPIO2
+			BUILTIN_LED	
+D10			IO, Pull-down,SS	GPIO15
+A0			Analog Input		A0
