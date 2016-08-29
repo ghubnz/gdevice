@@ -7,7 +7,7 @@ void setup() {
 }
 
 void loop() {
-  HubAP.loop(NULL);  
+  HubAP.loop(NULL);
 }
 
 uint8_t initHandler(uint8_t state, void *params ...) {
