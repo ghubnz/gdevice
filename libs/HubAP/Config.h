@@ -42,6 +42,7 @@ class ConfigClass {
 		void clean();
 		void load();
 		void dump();
+		String debug();
 
 		void setSSID(const char*);
 		void setPass(const char*);
@@ -57,12 +58,12 @@ class ConfigClass {
 		char * getSecKey();
 		char * getCard(int);
 	private:
-		char _wifiSSID[HUB_AP_WIFI_SSID_SIZE] = {0};
-		char _wifiPass[HUB_AP_WIFI_PASS_SIZE] = {0};
-		char _hubAddr[HUB_AP_ADDR_SIZE] = {0};
-		char _hubKey[HUB_AP_HUBKEY_SIZE] = {0};
-		char _secKey[HUB_AP_SECKEY_SIZE] = {0};
-		char _card[HUB_AP_CARD_NUM][HUB_AP_CARD_SIZE] = {{0}};
+		char _wifiSSID[HUB_AP_WIFI_SSID_SIZE + 1] = {0};
+		char _wifiPass[HUB_AP_WIFI_PASS_SIZE + 1] = {0};
+		char _hubAddr[HUB_AP_ADDR_SIZE + 1] = {0};
+		char _hubKey[HUB_AP_HUBKEY_SIZE + 1] = {0};
+		char _secKey[HUB_AP_SECKEY_SIZE + 1] = {0};
+		char _card[HUB_AP_CARD_NUM][HUB_AP_CARD_SIZE + 1] = {{0}};
 };
 static ConfigClass Config;
 #endif // HUB_AP_CONFIG

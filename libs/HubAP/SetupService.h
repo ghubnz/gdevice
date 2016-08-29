@@ -10,7 +10,9 @@
 #include "HubAP.h"
 #include "html.h"
 
-#define HUB_AP_SETUP_BTN 15 
+#define HUB_AP_SETUP_BTN 15
+
+String redirectPage(String, String, String); 
 
 // setup service class
 class SetupServiceClass {
@@ -25,6 +27,7 @@ class SetupServiceClass {
 		void _handleRestart();
 		void _handleNotFound();
 		void _handleReset();
+		void _handleDebug();
 
 		ESP8266WebServer _server;
 

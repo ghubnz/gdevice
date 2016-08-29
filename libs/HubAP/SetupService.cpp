@@ -27,7 +27,9 @@ uint8_t SetupServiceClass::setup() {
 	std::function<void(void)> hRestart = [&]{this->_handleRestart();};
 	_server.on("/restart", hRestart);
 	std::function<void(void)> hReset = [&]{this->_handleReset();};
-	_server.on("/restart", hReset);
+	_server.on("/reset", hReset);
+	std::function<void(void)> hDebug = [&]{this->_handleDebug();};
+	_server.on("/debug", hDebug);
 	std::function<void(void)> hNotFound = [&]{this->_handleNotFound();};
 	_server.onNotFound(hNotFound);
 	_server.begin();
@@ -39,6 +41,8 @@ void SetupServiceClass::loop() {
 }
 
 void SetupServiceClass::_handleRoot() {
+	Serial.println("Root handle");
+	Config.load();
 	String cards;
 	for(int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 		String card = String(HUB_AP_HTML_CARD);
@@ -53,10 +57,11 @@ void SetupServiceClass::_handleRoot() {
 	page.replace("$HUBKEY$", String(Config.getHubKey()));
 	page.replace("$SECKEY$", String(Config.getSecKey()));
 	page.replace("$CARD$", cards);	
-	_server.send (200, "text/html", page);	
+	_server.send (200, "text/html", page);
 }
 
 void SetupServiceClass::_handleSet() {
+	Serial.println("Set handle");
 	_server.sendHeader("Location", "/");
 	_server.send (302, "text/plain", "Config updated...\n\n");	
 
@@ -72,15 +77,34 @@ void SetupServiceClass::_handleSet() {
 }
 
 void SetupServiceClass::_handleReset() {
-	_server.send (200, "text/plain", "Cleaning...\n\n");
+	Serial.println("Reset handle");
+	_server.send (200, "text/html",
+			redirectPage("3", "/", "Resetting..."));
 	Config.clean();
 }
 
 void SetupServiceClass::_handleRestart() {
-	_server.send (200, "text/plain", "Restarting...\n\n");
+	Serial.println("Restart handle");
+	_server.send (200, "text/html",
+			redirectPage("30", "javascript:window.close();", "Restarting..."));
 	ESP.restart();
 }
 
+void SetupServiceClass::_handleDebug() {
+	Serial.println("Debug handle");
+	_server.send (200, "text/plain", String(Config.debug()));
+}
+
 void SetupServiceClass::_handleNotFound() {
-	_server.send ( 404, "text/plain", "File Not Found\n\n");
+	Serial.println("Not Found handle");
+	_server.send ( 404, "text/html",
+			redirectPage("5", "/", "File Not Found"));
+}
+
+String redirectPage(String delay, String url, String text) {
+	String page = String(HUB_AP_HTML_REDIRECT);
+	page.replace("$DELAY$", delay);
+	page.replace("$URL$", url);
+	page.replace("$TEXT$", text);
+	return page;
 }

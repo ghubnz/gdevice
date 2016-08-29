@@ -13,6 +13,11 @@ HubAPClass::HubAPClass() {
 }
 
 void HubAPClass::setup() {
+	// Config
+	Serial.print("Loading Config...");	
+	Config.load();
+	Serial.println("...DONE");	
+
 	// setup button
 	Serial.print("Setting Service...");	
 	if (_state = SetupService.setup() == HUB_AP_STATE_SETUP) {

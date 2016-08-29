@@ -1,13 +1,15 @@
 #include "SetupService.h"
 
 #define LOAD(v, offset, size)\
-	for(int x = offset; x < offset + size; x++) {v[x] = char(EEPROM.read(x));}
+	for(int x = 0; x < size; x++) { \
+		v[x] = char(EEPROM.read(x + offset));}\
+	v[offset + size] = '\0';
 
 #define DUMP(v, offset, size)\
-	for(int x = offset; x < offset + size; x++) {EEPROM.write(x, v[x]);}
+	for(int x = 0; x < size; x++) { EEPROM.write(x + offset, v[x]);}
 
 #define SET(name, v, size) \
-	void ConfigClass::set##name(const char *v) {memcpy(_##v, v, size);}
+	void ConfigClass::set##name(const char *v) {strncpy(_##v, v, size);}
 
 #define GET(name, v) \
 	char * ConfigClass::get##name() {return &_##v[0];}
@@ -29,6 +31,7 @@ void ConfigClass::load() {
 }
 
 void ConfigClass::dump() {
+	clean();
 	DUMP(_wifiSSID, HUB_AP_WIFI_SSID_OFFSET, HUB_AP_WIFI_SSID_SIZE);
 	DUMP(_wifiPass, HUB_AP_WIFI_PASS_OFFSET, HUB_AP_WIFI_PASS_SIZE);
 	DUMP(_hubAddr, HUB_AP_ADDR_OFFSET, HUB_AP_ADDR_SIZE);
@@ -37,6 +40,7 @@ void ConfigClass::dump() {
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 		DUMP(_card[i], HUB_AP_CARD_OFFSET + i * HUB_AP_CARD_SIZE, HUB_AP_CARD_SIZE);
 	}
+	EEPROM.commit();
 }
 
 void ConfigClass::setCard(int i, const char *num) {
@@ -63,4 +67,21 @@ void ConfigClass::clean() {
 	for (int i = 0; i < HUB_AP_EEPROM_SIZE; i++) {
 		EEPROM.write(i, 0);
 	}
+	EEPROM.commit();
+}
+
+String ConfigClass::debug() {
+	String eeprom;
+	for (int i = 0; i < HUB_AP_EEPROM_SIZE; i++) {
+		uint8_t c = EEPROM.read(i);
+		if (c >= 0x20 && c <= 0x7E) {
+			eeprom += String((char)c);
+		} else {
+			eeprom += "[" + String(c, HEX) + "]";
+		}
+		if (i % 32 == 31) {
+			eeprom += "\n";
+		}
+	}
+	return eeprom;
 }
