@@ -6,13 +6,14 @@
 // pins
 #define RC522_SS_PIN  4 // D4
 #define RC522_RST_PIN 16 // D2
-#define SERVO_PIN     0 // D8
+#define SERVO_PIN     5 // D8
 #define SERVO_SPEED   1
 // servo
 #define STAT_LOCK   10
 #define STAT_UNLOCK 170
 // const
-#define MAX_NUID    32
+#define MAX_NUID    16
+#define CARD_NUM    8
 
 Servo servo;
 MFRC522 rfid(RC522_SS_PIN, RC522_RST_PIN); // Instance of the class
@@ -20,7 +21,11 @@ MFRC522::MIFARE_Key key;
 
 // Init array that will store new NUID 
 byte lastCard[MAX_NUID] = {0};
-byte acceptCard[MAX_NUID] = {0x75, 0x44, 0xd1, 0x65};
+byte acceptCard[CARD_NUM][MAX_NUID] = {
+    {0x75, 0x44, 0xd1, 0x65},
+    {0x2b, 0xc9, 0xbd, 0x43},
+    {0xcb, 0xc2, 0xbd, 0x43}
+};
 
 void setup() { 
 	Serial.begin(115200);
@@ -72,10 +77,13 @@ void loop() {
   }
 
   // compare to accepted card
-  if (memcmp(rfid.uid.uidByte, acceptCard, rfid.uid.size) == 0) {    
-    Serial.println(F("Trigger door"));
-    triggerDoor(SERVO_SPEED);
-  }  
+  for (int i = 0; i < CARD_NUM; i ++) {
+    if (memcmp(rfid.uid.uidByte, acceptCard[i], rfid.uid.size) == 0) {    
+      Serial.println(F("Trigger door"));
+      triggerDoor(SERVO_SPEED);
+      break;
+    }  
+  }
  
 	// Halt PICC
 	rfid.PICC_HaltA();

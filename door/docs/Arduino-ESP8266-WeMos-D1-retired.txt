@@ -1,10 +1,10 @@
 BTN		ESP8266 ONBOARD
 =======================
-PIN		GPIO3	D0
+PIN		GPIO15	D10
 
 SG90	ESP8266	ONBOARD
 =======================
-PWM		GPIO0	D8
+PWM		GPIO5	D3/D15
 VCC		5V		5V
 GND		GND		GND
 
