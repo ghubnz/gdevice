@@ -1,106 +1,66 @@
 #include "SetupService.h"
 
+#define LOAD(v, offset, size)\
+	for(int x = offset; x < offset + size; x++) {v[x] = char(EEPROM.read(x));}
+
+#define DUMP(v, offset, size)\
+	for(int x = offset; x < offset + size; x++) {EEPROM.write(x, v[x]);}
+
+#define SET(name, v, size) \
+	void ConfigClass::set##name(const char *v) {memcpy(_##v, v, size);}
+
+#define GET(name, v) \
+	char * ConfigClass::get##name() {return &_##v[0];}
+
 // Public
-Config::Config() {
-	EEPROM.begin(HUB_AP_EERPOM_SIZE);
+ConfigClass::ConfigClass() {
+	EEPROM.begin(HUB_AP_EEPROM_SIZE);
 }
 
-void Config::load() {
-	for (int i = HUB_AP_WIFI_SSID_OFFSET; 
-			i < HUB_AP_WIFI_SSID_OFFSET + HUB_AP_WIFI_SSID_SIZE; ++i) {
- 		_wifiSSID[i] = char(EEPROM.read(i));
- 	}
-
-	for (int i = HUB_AP_WIFI_PASS_OFFSET;
-			i < HUB_AP_WIFI_PASS_SIZE; ++i) {
-    	_wifiPass[i] = char(EEPROM.read(i));
-  	}
-
-	for (int i = HUB_AP_ADDR_OFFSET;
-			i < HUB_AP_ADDR_OFFSET + HUB_AP_ADDR_SIZE; ++i) {
-    	_hubAddr[i] = char(EEPROM.read(i));
-  	}
-
-	for (int i = HUB_AP_HUBKEY_OFFSET;
-			i < HUB_AP_HUBKEY_OFFSET + HUB_AP_ADDR_SIZE; ++i) {
-    	_hubKey[i] = char(EEPROM.read(i));
-  	}
-
-	for (int i = HUB_AP_SECKEY_OFFSET;
-			i < HUB_AP_SECKEY_OFFSET + HUB_AP_ADDR_SIZE; ++i) {
-    	_secKey[i] = char(EEPROM.read(i));
-  	}
+void ConfigClass::load() {
+	LOAD(_wifiSSID, HUB_AP_WIFI_SSID_OFFSET, HUB_AP_WIFI_SSID_SIZE);
+	LOAD(_wifiPass, HUB_AP_WIFI_PASS_OFFSET, HUB_AP_WIFI_PASS_SIZE);
+	LOAD(_hubAddr, HUB_AP_ADDR_OFFSET, HUB_AP_ADDR_SIZE);
+	LOAD(_hubKey, HUB_AP_HUBKEY_OFFSET, HUB_AP_HUBKEY_SIZE);
+	LOAD(_secKey, HUB_AP_SECKEY_OFFSET, HUB_AP_SECKEY_SIZE);
+	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
+		LOAD(_card[i], HUB_AP_CARD_OFFSET + i * HUB_AP_CARD_SIZE, HUB_AP_CARD_SIZE);
+	}
 }
 
-void Config::dump() {
-	for (int i = HUB_AP_WIFI_SSID_OFFSET; 
-			i < HUB_AP_WIFI_SSID_OFFSET + HUB_AP_WIFI_SSID_SIZE; ++i) {
-		EEPROM.write(i, _wifiSSID[i]);
- 	}
-
-	for (int i = HUB_AP_WIFI_PASS_OFFSET;
-			i < HUB_AP_WIFI_PASS_SIZE; ++i) {
-		EEPROM.write(i, _wifiPass[i]);
-  	}
-
-	for (int i = HUB_AP_ADDR_OFFSET;
-			i < HUB_AP_ADDR_OFFSET + HUB_AP_ADDR_SIZE; ++i) {
-		EEPROM.write(i, _hubAddr[i]);  	
-  	}
-
-	for (int i = HUB_AP_HUBKEY_OFFSET;
-			i < HUB_AP_HUBKEY_OFFSET + HUB_AP_ADDR_SIZE; ++i) {
-		EEPROM.write(i, _hubKey[i]);  	 
-  	}
-
-	for (int i = HUB_AP_SECKEY_OFFSET;
-			i < HUB_AP_SECKEY_OFFSET + HUB_AP_ADDR_SIZE; ++i) {
-		EEPROM.write(i, _secKey[i]);  	   	
-  	}
+void ConfigClass::dump() {
+	DUMP(_wifiSSID, HUB_AP_WIFI_SSID_OFFSET, HUB_AP_WIFI_SSID_SIZE);
+	DUMP(_wifiPass, HUB_AP_WIFI_PASS_OFFSET, HUB_AP_WIFI_PASS_SIZE);
+	DUMP(_hubAddr, HUB_AP_ADDR_OFFSET, HUB_AP_ADDR_SIZE);
+	DUMP(_hubKey, HUB_AP_HUBKEY_OFFSET, HUB_AP_HUBKEY_SIZE);
+	DUMP(_secKey, HUB_AP_SECKEY_OFFSET, HUB_AP_SECKEY_SIZE);
+	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
+		DUMP(_card[i], HUB_AP_CARD_OFFSET + i * HUB_AP_CARD_SIZE, HUB_AP_CARD_SIZE);
+	}
 }
 
-void Config::setSSID(char ssid[32]) {
-	memcpy(_wifiSSID, ssid, 32);
+void ConfigClass::setCard(int i, const char *num) {
+	memcpy(_card[i], num, HUB_AP_CARD_SIZE);
 }
 
-void Config::setPass(char pass[64]) {
-	memcpy(_wifiPass, pass, 64);
+char * ConfigClass::getCard(int i) {
+	return &_card[i][0];
 }
 
-void Config::setHubAddr(char addr[128]) {
-	memcpy(_hubAddr, addr, 128);
-}
+SET(SSID, wifiSSID, HUB_AP_WIFI_SSID_SIZE);
+SET(Pass, wifiPass, HUB_AP_WIFI_PASS_SIZE);
+SET(HubAddr, hubAddr, HUB_AP_ADDR_SIZE);
+SET(HubKey, hubKey, HUB_AP_HUBKEY_SIZE);
+SET(SecKey, secKey, HUB_AP_SECKEY_SIZE);
 
-void Config::setHubKey(char key[16]) {
-	memcpy(_hubKey, key, 16);
-}
+GET(SSID, wifiSSID);
+GET(Pass, wifiPass);
+GET(HubAddr, hubAddr);
+GET(HubKey, hubKey);
+GET(SecKey, secKey);
 
-void Config::setSecKey(char key[16]) {
-	memcpy(_secKey, key, 16);
-}
-
-char * Config::getSSID() {
-	return &_wifiSSID[0];
-}
-
-char * Config::getPass() {
-	return &_wifiPass[0];
-}
-
-char * Config::getHubAddr() {
-	return &_hubAddr[0];
-}
-
-char * Config::getHubKey() {
-	return &_hubKey[0];
-}
-
-char * Config::getSecKey() {
-	return &_secKey[0];
-}
-
-void Config::clean() {
-	for (int i = 0; i < HUB_AP_EERPOM_SIZE; i++) {
+void ConfigClass::clean() {
+	for (int i = 0; i < HUB_AP_EEPROM_SIZE; i++) {
 		EEPROM.write(i, 0);
 	}
 }

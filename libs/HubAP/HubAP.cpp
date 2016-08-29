@@ -1,24 +1,37 @@
 #include "HubAP.h"
-
 // Public
-HubAP::HubAP() {}
-
-void HubAP::setup() {
+HubAPClass::HubAPClass() {
 	// serial speed
 	Serial.begin(HUB_AP_SERIAL_SPEED);
+	Serial.printf("Serial speed: %d\n", HUB_AP_SERIAL_SPEED);
+	
 	// buildin LED
+	Serial.print("Buildin LED...");	
 	pinMode(HUB_AP_LED, OUTPUT);
 	digitalWrite(HUB_AP_LED, HIGH);
-	// eeprom
-	_config = Config();
-	// setup button
-	SetupService setupService = SetupService(&_config);
-	setupService.loop();
-	// connect WiFi
-	_connectWiFi();
+	Serial.println("...DONE");		
 }
 
-uint8_t HubAP::loop(void *params ...) {
+void HubAPClass::setup() {
+	// setup button
+	Serial.print("Setting Service...");	
+	if (_state = SetupService.setup() == HUB_AP_STATE_SETUP) {
+		Serial.println("...DONE");	
+		return;
+	}
+	Serial.println("...SKIP");		
+
+	// connect WiFi
+	Serial.print("Connecting WiFi...");		
+	_connectWiFi();
+	Serial.println("...DONE");		
+}
+
+uint8_t HubAPClass::loop(void *params ...) {
+	if (_state == HUB_AP_STATE_SETUP) {
+		SetupService.loop();
+		return HUB_AP_STATE_SETUP;		
+	}
 	if (_states[_state] == NULL) {
 		_state = _states[HUB_AP_STATE_ERROR](HUB_AP_STATE_ERROR, params);
 	}
@@ -26,20 +39,22 @@ uint8_t HubAP::loop(void *params ...) {
 	return _state;
 }
 
-void HubAP::add(uint8_t state, StateHandler f) {
+void HubAPClass::add(uint8_t state, StateHandler f) {
+	Serial.print("State Handler...");		
 	_states[state] = f;
+	Serial.println("DONE");	
 }
 
-void HubAP::setState(uint8_t state) {
+void HubAPClass::setState(uint8_t state) {
 	_state = state;
 }
 
 // Connect WiFi
 // TODO if it reached the max waiting times, the AP will be in offline mode
-void HubAP::_connectWiFi() {
-	// TODO read SSID and Password from the eeprom
-	// Connect WiFi
-	WiFi.begin(HUB_AP_WIFI_SSID, HUB_AP_WIFI_PASS);
+void HubAPClass::_connectWiFi() {
+	// read SSID and Password from the config	
+	// Connect WiFi	
+	WiFi.begin(Config.getSSID(), Config.getPass());
 	// Wait max to 30 seconds
 	// TODO Set the max waiting times
 	while (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -51,24 +66,14 @@ void HubAP::_connectWiFi() {
 	Serial.printf("WiFi Connected: MAC=%s\n", macStr.c_str());
 } 
 
-void HubAP::flashLED(int d) {
+void HubAPClass::flashLED(int d) {
 	int state = digitalRead(HUB_AP_LED);
 	digitalWrite(HUB_AP_LED, !state);
 	delay(d/2);
 	digitalWrite(HUB_AP_LED, state);
 	delay(d/2);	
 }
-/*
-int HubAP::call(char api[], char p[]) {
-HTTPClient http;
-	http.begin("http://192.168.1.65:8080/echo"); //HTTP
-	int httpCode = http.GET();
-	if(httpCode > 0) {
-		if(httpCode == HTTP_CODE_OK) {
-			String payload = http.getString();
-		}
-	}
-	http.end();
-	return httpCode;	
+
+void HubAPClass::reset() {
+	Config.clean();
 }
-*/
