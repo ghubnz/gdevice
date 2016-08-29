@@ -35,11 +35,11 @@ form > div > input {
 			</div>
 			<div>
 				<label for="hub_key">Hub Key</label>		
-				<input id="hub_key" type="text" name="hubkey" placeholder="Hub Key" maxlength="8" value="$HUBKEY$"> 
+				<input id="hub_key" type="text" name="hubkey" placeholder="Hub Key" maxlength="16" value="$HUBKEY$"> 
 			</div>
 			<div>
 				<label for="sec_key">Secrit Key</label>					
-				<input id="sec_key" type="text" name="seckey" placeholder="Secrit Key" maxlength="8" value="$SECKEY$"> 	
+				<input id="sec_key" type="text" name="seckey" placeholder="Secrit Key" maxlength="16" value="$SECKEY$"> 	
 			</div>
 			$CARD$
 			<button type="submit">Save</button>
@@ -47,6 +47,9 @@ form > div > input {
 		<hr>
 		<form action="/restart" method="POST">
 			<button type="submit">Restart</button>
+		</form>
+		<form action="/reset" method="POST">
+			<button type="submit">Reset</button>
 		</form>
 	</body>
 </html>
