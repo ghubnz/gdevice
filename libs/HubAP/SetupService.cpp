@@ -7,6 +7,7 @@ SetupServiceClass::SetupServiceClass() {
 
 uint8_t SetupServiceClass::setup() {
 	// read the eeprom
+	Config.load();
 	char ssid[HUB_AP_WIFI_SSID_SIZE] = {0};
 	Config.getSSID(ssid);
 	if ((strlen(ssid) != 0) && (digitalRead(HUB_AP_SETUP_BTN) == LOW)) {

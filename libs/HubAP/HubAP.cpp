@@ -16,11 +16,6 @@ HubAPClass::HubAPClass() {
 }
 
 uint8_t HubAPClass::setup(uint8_t initState) {
-	// Config
-	Serial.print("Loading Config...");	
-	Config.load();
-	Serial.println("...DONE");	
-
 	// setup button
 	Serial.print("Setting Service...");	
 	if (SetupService.setup() == HUB_AP_STATE_SETUP) {
@@ -81,12 +76,12 @@ void HubAPClass::_connectWiFi() {
 	// Wait max to 30 seconds
 	// TODO Set the max waiting times
 	while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-		Serial.printf("Waiting WiFi Connection: SSID=%s\n", HUB_AP_WIFI_SSID);		
+		Serial.printf("Waiting: SSID=%s", HUB_AP_WIFI_SSID);		
 		flashLED(40);
 	}
 	String macStr = WiFi.macAddress();
 	memcpy(_macAddr, macStr.c_str(), 6);
-	Serial.printf("WiFi Connected: MAC=%s\n", macStr.c_str());
+	Serial.printf("Connected: MAC=%s", macStr.c_str());
 } 
 
 void HubAPClass::flashLED(int d) {
