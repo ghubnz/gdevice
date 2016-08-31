@@ -7,13 +7,13 @@ SetupServiceClass::SetupServiceClass() {
 
 uint8_t SetupServiceClass::setup() {
 	// read the eeprom
-	char *ssid = Config.getSSID();
+	const char *ssid = Config.getSSID();
 	if ((sizeof(ssid) > 0) && (ssid[0] != 0) && (digitalRead(HUB_AP_SETUP_BTN) == LOW)) {
-		return HUB_AP_STATE_INIT;
+		return HUB_AP_STATE_NONE;
 	}
 	// if the configration is empty or setup button was pressed down
 	//start WiFi AP
-	char *pass = Config.getPass();
+	const char *pass = Config.getPass();
 	WiFi.softAP(ssid, pass);
 	IPAddress apIP = WiFi.softAPIP();
 	Serial.print("AP IP address: ");
@@ -36,8 +36,9 @@ uint8_t SetupServiceClass::setup() {
 	return HUB_AP_STATE_SETUP;
 }
 
-void SetupServiceClass::loop() {
+uint8_t SetupServiceClass::loop() {
 	_server.handleClient();
+	return HUB_AP_STATE_SETUP;
 }
 
 void SetupServiceClass::_handleRoot() {
@@ -45,10 +46,11 @@ void SetupServiceClass::_handleRoot() {
 	Config.load();
 	String cards;
 	for(int i = 0; i < HUB_AP_CARD_NUM; i ++) {
-		String card = String(HUB_AP_HTML_CARD);
-		card.replace("$I$", String(i));
-		card.replace("$NUM$", String(Config.getCard(i)));
-		cards += card;
+		cards += String(HUB_AP_HTML_CARD);
+		cards.replace("$I$", String(i));
+		char card[HUB_AP_CARD_SIZE] = {0};
+		Config.getCard(i, card);
+		cards.replace("$NUM$", String(card));
 	}
 	String page = String(HUB_AP_HTML_ROOT);
 	page.replace("$SSID$", String(Config.getSSID()));

@@ -20,7 +20,7 @@ class SetupServiceClass {
 		SetupServiceClass();
 		
 		uint8_t setup();
-		void loop();
+		uint8_t loop();
 	private:
 		void _handleRoot();
 		void _handleSet();

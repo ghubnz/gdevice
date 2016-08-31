@@ -4,6 +4,7 @@
 #include <SPI.h>
 #include <MFRC522.h>
 #include <ESP8266WiFi.h>
+#include <limits.h>
 
 #include "HubAP.h"
 
@@ -18,11 +19,13 @@ class RFIDClass {
 		
 		uint8_t setup();
 		uint8_t loop();
+
+		void getCard(char[HUB_AP_CARD_SIZE]);
 	private:
 		MFRC522 _rfid;
 		MFRC522::MIFARE_Key _key;
-		uint8_t _readCard[HUB_AP_CARD_SIZE] = {0};
-		int _readCardTime = 0;
+		char _readCard[HUB_AP_CARD_SIZE] = {0};
+		uint32_t _readCardTime = 0;
 };
 
 static RFIDClass RFID;

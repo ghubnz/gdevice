@@ -4,6 +4,9 @@ HubAPClass::HubAPClass() {
 	// serial speed
 	Serial.begin(HUB_AP_SERIAL_SPEED);
 	Serial.printf("Serial speed: %d\n", HUB_AP_SERIAL_SPEED);
+
+	// SPI
+	SPI.begin();
 	
 	// buildin LED
 	Serial.print("Buildin LED...");	
@@ -12,7 +15,7 @@ HubAPClass::HubAPClass() {
 	Serial.println("...DONE");		
 }
 
-void HubAPClass::setup() {
+uint8_t HubAPClass::setup(uint8_t initState) {
 	// Config
 	Serial.print("Loading Config...");	
 	Config.load();
@@ -20,25 +23,36 @@ void HubAPClass::setup() {
 
 	// setup button
 	Serial.print("Setting Service...");	
-	if (_state = SetupService.setup() == HUB_AP_STATE_SETUP) {
+	if (SetupService.setup() == HUB_AP_STATE_SETUP) {
+		_state = HUB_AP_STATE_SETUP;
 		Serial.println("...DONE");	
-		return;
+		return HUB_AP_STATE_SETUP;
 	}
 	Serial.println("...SKIP");		
 
 	// connect WiFi
 	Serial.print("Connecting WiFi...");		
 	_connectWiFi();
-	Serial.println("...DONE");		
+	Serial.println("...DONE");
+	
+	// RFID
+	Serial.print("RFID...");		
+	uint8_t state = (initState == HUB_AP_STATE_NONE) ? RFID.setup() : initState;
+	Serial.println("...DONE");
+	_state = state;	
+	return state;
 }
 
 uint8_t HubAPClass::loop(void *params ...) {
 	if (_state == HUB_AP_STATE_SETUP) {
-		SetupService.loop();
-		return HUB_AP_STATE_SETUP;		
+		return SetupService.loop();
+	}
+	if (_state == HUB_AP_STATE_RFID) {
+		_state = RFID.loop();
+		return _state;
 	}
 	if (_states[_state] == NULL) {
-		_state = _states[HUB_AP_STATE_ERROR](HUB_AP_STATE_ERROR, params);
+		_state = _states[HUB_AP_STATE_ERROR](_state, params);
 	}
 	_state = _states[_state](_state, params);
 	return _state;
