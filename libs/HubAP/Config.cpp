@@ -12,7 +12,7 @@
 	void ConfigClass::set##name(const char *v) {strncpy(_##v, v, size);}
 
 #define GET(name, v) \
-	char * ConfigClass::get##name() {return &_##v[0];}
+	const char * ConfigClass::get##name() {return &_##v[0];}
 
 // Public
 ConfigClass::ConfigClass() {
@@ -43,12 +43,32 @@ void ConfigClass::dump() {
 	EEPROM.commit();
 }
 
-void ConfigClass::setCard(int i, const char *num) {
-	memcpy(_card[i], num, HUB_AP_CARD_SIZE);
+// TODO parse card format
+void ConfigClass::setCard(int i, const char *numStr) {
+    for (int x = 0; x < HUB_AP_CARD_SIZE; x++) {
+        _card[i][x] = strtoul(numStr, NULL, HEX);  // Convert byte
+        numStr = strchr(numStr, ':');               // Find next separator
+        if (numStr == NULL || *numStr == '\0') {
+            break;                            // No more separators, exit
+        }
+        numStr++;                                // Point to next character after separator
+    }
 }
 
-char * ConfigClass::getCard(int i) {
-	return &_card[i][0];
+void ConfigClass::getCard(int i, char * card) {
+	if (_card[i][0] == 0x00) {
+		card[0] = 0x00;
+		return;
+	}
+	sprintf(card, "%X", _card[i][0]);
+	for (int x = 1; x < HUB_AP_CARD_SIZE; x ++) {	
+		card += strlen(card);
+		if (_card[i][x] == 0x00) {
+			*card = '\0';
+			break;
+		}
+		sprintf(card, ":%X", _card[i][x]);
+	}
 }
 
 SET(SSID, wifiSSID, HUB_AP_WIFI_SSID_SIZE);
@@ -84,4 +104,8 @@ String ConfigClass::debug() {
 		}
 	}
 	return eeprom;
+}
+
+void parseBytes(const char* str, char sep, char* bytes, int maxBytes, int base) {
+
 }

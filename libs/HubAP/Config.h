@@ -51,12 +51,12 @@ class ConfigClass {
 		void setSecKey(const char*);
 		void setCard(int, const char*);
 	
-		char * getSSID();
-		char * getPass();
-		char * getHubAddr();
-		char * getHubKey();
-		char * getSecKey();
-		char * getCard(int);
+		const char * getSSID();
+		const char * getPass();
+		const char * getHubAddr();
+		const char * getHubKey();
+		const char * getSecKey();
+		void getCard(int, char *);
 	private:
 		char _wifiSSID[HUB_AP_WIFI_SSID_SIZE + 1] = {0};
 		char _wifiPass[HUB_AP_WIFI_PASS_SIZE + 1] = {0};
@@ -66,4 +66,6 @@ class ConfigClass {
 		char _card[HUB_AP_CARD_NUM][HUB_AP_CARD_SIZE + 1] = {{0}};
 };
 static ConfigClass Config;
+
+void parseBytes(const char* str, char sep, char* bytes, int, int);
 #endif // HUB_AP_CONFIG
