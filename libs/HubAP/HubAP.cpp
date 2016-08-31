@@ -72,8 +72,12 @@ void HubAPClass::setState(uint8_t state) {
 // TODO if it reached the max waiting times, the AP will be in offline mode
 void HubAPClass::_connectWiFi() {
 	// read SSID and Password from the config	
-	// Connect WiFi	
-	WiFi.begin(Config.getSSID(), Config.getPass());
+	// Connect WiFi
+	char ssid[HUB_AP_WIFI_SSID_SIZE] = {0};
+	Config.getSSID(ssid);
+	char pass[HUB_AP_WIFI_PASS_SIZE] = {0};
+	Config.getPass(pass);
+	WiFi.begin(ssid, pass);
 	// Wait max to 30 seconds
 	// TODO Set the max waiting times
 	while (WiFi.waitForConnectResult() != WL_CONNECTED) {

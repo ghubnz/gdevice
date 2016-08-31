@@ -7,13 +7,15 @@ SetupServiceClass::SetupServiceClass() {
 
 uint8_t SetupServiceClass::setup() {
 	// read the eeprom
-	const char *ssid = Config.getSSID();
-	if ((sizeof(ssid) > 0) && (ssid[0] != 0) && (digitalRead(HUB_AP_SETUP_BTN) == LOW)) {
+	char ssid[HUB_AP_WIFI_SSID_SIZE] = {0};
+	Config.getSSID(ssid);
+	if ((strlen(ssid) != 0) && (digitalRead(HUB_AP_SETUP_BTN) == LOW)) {
 		return HUB_AP_STATE_NONE;
 	}
 	// if the configration is empty or setup button was pressed down
 	//start WiFi AP
-	const char *pass = Config.getPass();
+	char pass[HUB_AP_WIFI_PASS_SIZE] = {0};
+	Config.getPass(pass);
 	WiFi.softAP(ssid, pass);
 	IPAddress apIP = WiFi.softAPIP();
 	Serial.print("AP IP address: ");
@@ -53,11 +55,17 @@ void SetupServiceClass::_handleRoot() {
 		cards.replace("$NUM$", String(card));
 	}
 	String page = String(HUB_AP_HTML_ROOT);
-	page.replace("$SSID$", String(Config.getSSID()));
-	page.replace("$PASS$", String(Config.getPass()));
-	page.replace("$ADDR$", String(Config.getHubAddr()));
-	page.replace("$HUBKEY$", String(Config.getHubKey()));
-	page.replace("$SECKEY$", String(Config.getSecKey()));
+	char field[HUB_AP_EEPROM_SIZE] = {0};
+	Config.getSSID(field);
+	page.replace("$SSID$", String(field));
+	Config.getPass(field);
+	page.replace("$PASS$", String(field));
+	Config.getHubAddr(field);
+	page.replace("$ADDR$", String(field));
+	Config.getHubKey(field);
+	page.replace("$HUBKEY$", String(field));
+	Config.getSecKey(field);
+	page.replace("$SECKEY$", String(field));
 	page.replace("$CARD$", cards);	
 	_server.send (200, "text/html", page);
 }

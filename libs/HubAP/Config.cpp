@@ -12,7 +12,7 @@
 	void ConfigClass::set##name(const char *v) {strncpy(_##v, v, size);}
 
 #define GET(name, v) \
-	const char * ConfigClass::get##name() {return &_##v[0];}
+	void ConfigClass::get##name(char *v) {strcpy(v, _##v);}
 
 // Public
 ConfigClass::ConfigClass() {

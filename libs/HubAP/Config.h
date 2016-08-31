@@ -51,11 +51,11 @@ class ConfigClass {
 		void setSecKey(const char*);
 		void setCard(int, const char*);
 	
-		const char * getSSID();
-		const char * getPass();
-		const char * getHubAddr();
-		const char * getHubKey();
-		const char * getSecKey();
+		void getSSID(char *);
+		void getPass(char *);
+		void getHubAddr(char *);
+		void getHubKey(char *);
+		void getSecKey(char *);
 		void getCard(int, char *);
 	private:
 		char _wifiSSID[HUB_AP_WIFI_SSID_SIZE + 1] = {0};
