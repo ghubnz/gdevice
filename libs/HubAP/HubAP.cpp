@@ -5,9 +5,6 @@ HubAPClass::HubAPClass() {
 	Serial.begin(HUB_AP_SERIAL_SPEED);
 	Serial.printf("Serial speed: %d\n", HUB_AP_SERIAL_SPEED);
 
-	// SPI
-	SPI.begin();
-	
 	// buildin LED
 	Serial.print("Buildin LED...");	
 	pinMode(HUB_AP_LED, OUTPUT);
@@ -15,9 +12,9 @@ HubAPClass::HubAPClass() {
 	Serial.println("...DONE");		
 }
 
-uint8_t HubAPClass::setup(uint8_t initState) {
+uint8_t HubAPClass::setup(uint8_t initState /* = HUB_AP_STATE_NONE*/) {
 	// setup button
-	Serial.print("Setting Service...");	
+	Serial.print("Setup Service...");	
 	if (SetupService.setup() == HUB_AP_STATE_SETUP) {
 		_state = HUB_AP_STATE_SETUP;
 		Serial.println("...DONE");	
@@ -26,7 +23,7 @@ uint8_t HubAPClass::setup(uint8_t initState) {
 	Serial.println("...SKIP");		
 
 	// connect WiFi
-	Serial.print("Connecting WiFi...");		
+	Serial.print("WiFi connection...");		
 	_connectWiFi();
 	Serial.println("...DONE");
 	

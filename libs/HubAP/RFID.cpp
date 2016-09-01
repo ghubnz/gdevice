@@ -2,12 +2,15 @@
 
 // Public
 RFIDClass::RFIDClass() {
-	_rfid = MFRC522();
+	_rfid = MFRC522(HUB_AP_RFID_SS, HUB_AP_RFID_RST);
 }
 
 uint8_t RFIDClass::setup() {	// Look for new cards
+	// SPI
+	SPI.begin();
 	_rfid.PCD_Init();
 	WiFi.macAddress(_key.keyByte);
+	return HUB_AP_STATE_RFID;
 }
 
 uint8_t RFIDClass::loop() {
@@ -23,6 +26,10 @@ uint8_t RFIDClass::loop() {
 		return HUB_AP_STATE_ERROR;
 	}
 
+	Serial.print(F("PICC type: "));
+	MFRC522::PICC_Type piccType = _rfid.PICC_GetType(_rfid.uid.sak);
+	Serial.println(_rfid.PICC_GetTypeName(piccType));
+
 	uint8_t state = HUB_AP_STATE_DENY;
 	// pre-checking
 	//
@@ -30,6 +37,7 @@ uint8_t RFIDClass::loop() {
 	// if not last read 
 	// or last read time greater than 1 min
 	uint32_t now = millis();
+	Serial.println(now);
 	uint32_t s = - _readCardTime + now ;
 	if (now < _readCardTime) { // timer rolling
     	s = ULONG_MAX + s;
