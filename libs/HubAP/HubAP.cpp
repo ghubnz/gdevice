@@ -36,6 +36,7 @@ uint8_t HubAPClass::setup(uint8_t initState /* = HUB_AP_STATE_NONE*/) {
 }
 
 uint8_t HubAPClass::loop(void *params ...) {
+	_waitWiFi();
 	if (_state == HUB_AP_STATE_SETUP) {
 		return SetupService.loop();
 	}
@@ -61,7 +62,6 @@ void HubAPClass::setState(uint8_t state) {
 }
 
 // Connect WiFi
-// TODO if it reached the max waiting times, the AP will be in offline mode
 void HubAPClass::_connectWiFi() {
 	// read SSID and Password from the config	
 	// Connect WiFi
@@ -70,16 +70,25 @@ void HubAPClass::_connectWiFi() {
 	char pass[HUB_AP_WIFI_PASS_SIZE] = {0};
 	Config.getPass(pass);
 	WiFi.begin(ssid, pass);
-	// Wait max to 30 seconds
-	// TODO Set the max waiting times
-	while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-		Serial.printf("Waiting: SSID=%s", HUB_AP_WIFI_SSID);		
-		flashLED(40);
+	_waitWiFi();
+}
+
+void HubAPClass::_waitWiFi() {
+	if (WiFi.status() == WL_CONNECTED) {
+		return;
 	}
-	String macStr = WiFi.macAddress();
-	memcpy(_macAddr, macStr.c_str(), 6);
-	Serial.printf("Connected: MAC=%s", macStr.c_str());
-} 
+	// Wait max to 5 seconds
+	for (int i = 0; i < 100; i ++) {
+		if (WiFi.waitForConnectResult() == WL_CONNECTED) {
+			String macStr = WiFi.macAddress();
+			memcpy(_macAddr, macStr.c_str(), 6);
+			Serial.printf("Connected: MAC=%s", macStr.c_str());
+			return;
+		}
+		Serial.printf("Waiting: SSID=%s", HUB_AP_WIFI_SSID);		
+		flashLED(50);
+	}
+}
 
 void HubAPClass::flashLED(int d) {
 	int state = digitalRead(HUB_AP_LED);

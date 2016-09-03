@@ -7,6 +7,7 @@ RFIDClass::RFIDClass() {
 
 uint8_t RFIDClass::setup() {	// Look for new cards
 	// SPI
+	Config.load();
 	SPI.begin();
 	_rfid.PCD_Init();
 	WiFi.macAddress(_key.keyByte);
@@ -37,26 +38,23 @@ uint8_t RFIDClass::loop() {
 	// if not last read 
 	// or last read time greater than 1 min
 	uint32_t now = millis();
-	Serial.println(now);
 	uint32_t s = - _readCardTime + now ;
 	if (now < _readCardTime) { // timer rolling
     	s = ULONG_MAX + s;
   	}
-	while (memcmp(_rfid.uid.uidByte, _readCard, _rfid.uid.size) == 0 || s > 60000) {
+	while (memcmp(_rfid.uid.uidByte, _readCard, _rfid.uid.size) != 0 || s < 60000) {
   		// trigger checking process
 		// checking
 		//
 		// compare to accepted card
 		// 1. compare to root cards
 		for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
-			char card[HUB_AP_CARD_SIZE] = {0};
-			Config.getCard(i, card);
-			if (memcmp(_rfid.uid.uidByte, card, _rfid.uid.size) == 0) {
+			if (Config.matchCard(i, (char *)_rfid.uid.uidByte, _rfid.uid.size)) {
 				state = HUB_AP_STATE_ACCEPT;
       			goto EXIT;
 	    	}
 		}
-
+		
 		// 2. compare to Hub data
 		//
 		//	if (HubAP.tag(_rfid.uid.uidByte)) {
@@ -75,6 +73,7 @@ uint8_t RFIDClass::loop() {
 		break;
 	}
 EXIT:
+	_readCardTime = now;
 	// Halt PICC
 	_rfid.PICC_HaltA();
 	// Stop encryption on PCD

@@ -43,6 +43,7 @@ class HubAPClass {
 
 		StateHandler _states[UINT8_MAX] = { NULL };
 		void _connectWiFi();
+		void _waitWiFi();
 };
 
 static HubAPClass HubAP;

@@ -57,6 +57,8 @@ class ConfigClass {
 		void getHubKey(char *);
 		void getSecKey(char *);
 		void getCard(int, char *);
+
+		bool matchCard(int, char [HUB_AP_CARD_SIZE], int);
 	private:
 		char _wifiSSID[HUB_AP_WIFI_SSID_SIZE + 1] = {0};
 		char _wifiPass[HUB_AP_WIFI_PASS_SIZE + 1] = {0};
@@ -67,5 +69,5 @@ class ConfigClass {
 };
 static ConfigClass Config;
 
-void parseBytes(const char* str, char sep, char* bytes, int, int);
+void printHex(char *buffer, int bufferSize);
 #endif // HUB_AP_CONFIG

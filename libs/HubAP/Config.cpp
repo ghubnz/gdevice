@@ -71,6 +71,10 @@ void ConfigClass::getCard(int i, char * card) {
 	}
 }
 
+bool ConfigClass::matchCard(int i, char card[HUB_AP_CARD_SIZE], int size) {
+	return memcmp(card, _card[i], size) == 0;
+}
+
 SET(SSID, wifiSSID, HUB_AP_WIFI_SSID_SIZE);
 SET(Pass, wifiPass, HUB_AP_WIFI_PASS_SIZE);
 SET(HubAddr, hubAddr, HUB_AP_ADDR_SIZE);
@@ -106,6 +110,10 @@ String ConfigClass::debug() {
 	return eeprom;
 }
 
-void parseBytes(const char* str, char sep, char* bytes, int maxBytes, int base) {
-
+void printHex(char *buffer, int bufferSize) {
+	for (byte i = 0; i < bufferSize; i++) {
+		Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+		Serial.print(buffer[i], HEX);
+	}
+  Serial.println();
 }
