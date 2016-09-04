@@ -36,10 +36,10 @@ uint8_t HubAPClass::setup(uint8_t initState /* = HUB_AP_STATE_NONE*/) {
 }
 
 uint8_t HubAPClass::loop(void *params ...) {
-	_waitWiFi();
 	if (_state == HUB_AP_STATE_SETUP) {
 		return SetupService.loop();
 	}
+	_waitWiFi();
 	if (_state == HUB_AP_STATE_RFID) {
 		_state = RFID.loop();
 		return _state;

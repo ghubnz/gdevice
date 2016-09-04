@@ -25,8 +25,8 @@ uint8_t SetupServiceClass::setup() {
 	_server = ESP8266WebServer(80);
 	std::function<void(void)> hRoot = [&]{this->_handleRoot();};
 	_server.on("/", hRoot);
-	std::function<void(void)> hSet = [&]{this->_handleSet();};
-	_server.on("/post", HTTP_POST, hSet);
+	std::function<void(void)> hPost = [&]{this->_handlePost();};
+	_server.on("/post", HTTP_POST, hPost);
 	std::function<void(void)> hRestart = [&]{this->_handleRestart();};
 	_server.on("/restart", hRestart);
 	std::function<void(void)> hReset = [&]{this->_handleReset();};
@@ -46,7 +46,6 @@ uint8_t SetupServiceClass::loop() {
 
 void SetupServiceClass::_handleRoot() {
 	Serial.println("Root handle");
-	Config.load();
 	String cards;
 	for(int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 		cards += String(HUB_AP_HTML_CARD);
@@ -54,10 +53,11 @@ void SetupServiceClass::_handleRoot() {
 		char card[HUB_AP_CARD_SIZE] = {0};
 		Config.getCard(i, card);
 		cards.replace("$NUM$", String(card));
-	}
+	}	
 	String page = String(HUB_AP_HTML_ROOT);
 	char field[HUB_AP_EEPROM_SIZE] = {0};
 	Config.getSSID(field);
+	Serial.println(field);
 	page.replace("$SSID$", String(field));
 	Config.getPass(field);
 	page.replace("$PASS$", String(field));
@@ -71,7 +71,7 @@ void SetupServiceClass::_handleRoot() {
 	_server.send (200, "text/html", page);
 }
 
-void SetupServiceClass::_handleSet() {
+void SetupServiceClass::_handlePost() {
 	Serial.println("Set handle");
 	_server.sendHeader("Location", "/");
 	_server.send (302, "text/plain", "Config updated...\n\n");	

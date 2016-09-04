@@ -43,7 +43,7 @@ void ConfigClass::dump() {
 	EEPROM.commit();
 }
 
-// TODO parse card format
+// parse card format
 void ConfigClass::setCard(int i, const char *numStr) {
     for (int x = 0; x < HUB_AP_CARD_SIZE; x++) {
         _card[i][x] = strtoul(numStr, NULL, HEX);  // Convert byte

@@ -23,7 +23,7 @@ class SetupServiceClass {
 		uint8_t loop();
 	private:
 		void _handleRoot();
-		void _handleSet();
+		void _handlePost();
 		void _handleRestart();
 		void _handleNotFound();
 		void _handleReset();

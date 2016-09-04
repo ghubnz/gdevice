@@ -74,6 +74,9 @@ uint8_t RFIDClass::loop() {
 	}
 EXIT:
 	_readCardTime = now;
+	printHex((char *)_rfid.uid.uidByte, _rfid.uid.size);
+	memcpy(_readCard, _rfid.uid.uidByte, _rfid.uid.size);
+	printHex(_readCard, _rfid.uid.size);	
 	// Halt PICC
 	_rfid.PICC_HaltA();
 	// Stop encryption on PCD
