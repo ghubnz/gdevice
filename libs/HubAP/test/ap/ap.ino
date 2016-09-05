@@ -53,15 +53,18 @@ uint8_t errHandler(uint8_t state, void *params ...) {
 
 uint8_t denyHandler(uint8_t state, void *params ...) {
   Serial.println("DENY");
-  HubAP.flashLED(200);
+  HubAP.flashLED(50);
+  HubAP.flashLED(100);
+  HubAP.flashLED(50);  
   return HUB_AP_STATE_RFID;
 }
 
-uint8_t acceptHandler(uint8_t state, void *params ...) {
-  char num[HUB_AP_CARD_SIZE] = {0};
-  RFID.getCard(num);
-  Serial.printf("ACCEPT: %s\n", num);
-  HubAP.flashLED(200);
+uint8_t acceptHandler(uint8_t state, void *params ...) {  
+  char num[HUB_AP_CARD_SIZE] = {0};  
+  HubAP.RFID.getCard(num);
+  Serial.print("ACCEPT: ");
+  printHex(num, strlen(num));
+  HubAP.flashLED(100);
   triggerDoor(SERVO_SPEED);
   return HUB_AP_STATE_RFID;
 }
