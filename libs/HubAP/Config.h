@@ -1,8 +1,8 @@
 #ifndef HUB_AP_CONFIG
 #define HUB_AP_CONFIG
 
-#define HUB_AP_WIFI_SSID "GHub"
-#define HUB_AP_WIFI_PASS "gribblehirst"
+#define HUB_AP_WIFI_SSID "MeshedNET"
+#define HUB_AP_WIFI_PASS "rfidrfidrfid"
 #define HUB_AP_SERIAL_SPEED 115200
 
 #define HUB_AP_WIFI_SSID_OFFSET	0
@@ -20,6 +20,17 @@
 #define HUB_AP_CARD_NUM 4
 // #define HUB_AP_EEPROM_SIZE 512
 
+// not working state
+#define HUB_AP_STATE_NONE	0x00
+// error state
+#define HUB_AP_STATE_ERROR	0x01
+// enter setup service
+#define HUB_AP_STATE_SETUP	0x10
+// RFID
+#define HUB_AP_STATE_RFID	0x20
+#define HUB_AP_STATE_ACCEPT	0x30
+#define HUB_AP_STATE_DENY	0x31
+
 #define HUB_AP_EEPROM_SIZE HUB_AP_CARD_OFFSET + \
 	( HUB_AP_CARD_SIZE * HUB_AP_CARD_NUM ) // 320 = 256 + ( 16 * 4 )
 
@@ -27,12 +38,7 @@
 #define HUB_AP_LED LED_BUILTIN
 
 #include <SPI.h>
-#include <ESP8266WiFi.h>
-#include <WiFiClient.h> 
-#include <ESP8266WebServer.h>
-#include <ESP8266mDNS.h>
-
-#include "HubAP.h"
+#include <EEPROM.h>
 
 // Config class
 class ConfigClass {
@@ -67,7 +73,5 @@ class ConfigClass {
 		char _secKey[HUB_AP_SECKEY_SIZE + 1] = {0};
 		char _card[HUB_AP_CARD_NUM][HUB_AP_CARD_SIZE + 1] = {{0}};
 };
-static ConfigClass Config;
-
 void printHex(char *buffer, int bufferSize);
 #endif // HUB_AP_CONFIG

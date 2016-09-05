@@ -7,7 +7,7 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 
-#include "HubAP.h"
+#include "Config.h"
 #include "html.h"
 
 #define HUB_AP_SETUP_BTN 15
@@ -17,7 +17,7 @@ String redirectPage(String, String, String);
 // setup service class
 class SetupServiceClass {
 	public:
-		SetupServiceClass();
+		SetupServiceClass(ConfigClass *);
 		
 		uint8_t setup();
 		uint8_t loop();
@@ -30,9 +30,8 @@ class SetupServiceClass {
 		void _handleDebug();
 
 		ESP8266WebServer _server;
+		ConfigClass *Config;
 
 };
-
-static SetupServiceClass SetupService;
 
 #endif // HUB_AP_SETUP_SERVICE

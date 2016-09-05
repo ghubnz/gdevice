@@ -3,18 +3,6 @@
 
 #include <SPI.h>
 #include <ESP8266WiFi.h>
-#include <EEPROM.h>
-
-// not working state
-#define HUB_AP_STATE_NONE	0x00
-// error state
-#define HUB_AP_STATE_ERROR	0x01
-// enter setup service
-#define HUB_AP_STATE_SETUP	0x10
-// RFID
-#define HUB_AP_STATE_RFID	0x20
-#define HUB_AP_STATE_ACCEPT	0x30
-#define HUB_AP_STATE_DENY	0x31
 
 #include "Config.h"
 #include "SetupService.h"
@@ -37,13 +25,17 @@ class HubAPClass {
 		void setState(uint8_t);
 
 		void reset();
+
+		ConfigClass Config;
+		RFIDClass RFID = RFIDClass(&Config);
+		SetupServiceClass SetupService = SetupServiceClass(&Config);
 	private:
 		uint8_t _state = HUB_AP_STATE_NONE;
 		uint8_t _macAddr[6];
 
 		StateHandler _states[UINT8_MAX] = { NULL };
-		void _connectWiFi();
-		void _waitWiFi();
+		bool _connectWiFi();
+		bool _waitWiFi(int);
 };
 
 static HubAPClass HubAP;

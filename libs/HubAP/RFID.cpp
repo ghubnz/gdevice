@@ -1,13 +1,13 @@
 #include "RFID.h"
 
 // Public
-RFIDClass::RFIDClass() {
+RFIDClass::RFIDClass(ConfigClass *config) {
 	_rfid = MFRC522(HUB_AP_RFID_SS, HUB_AP_RFID_RST);
+	Config = config;
 }
 
 uint8_t RFIDClass::setup() {	// Look for new cards
 	// SPI
-	Config.load();
 	SPI.begin();
 	_rfid.PCD_Init();
 	WiFi.macAddress(_key.keyByte);
@@ -42,30 +42,47 @@ uint8_t RFIDClass::loop() {
 	if (now < _readCardTime) { // timer rolling
     	s = ULONG_MAX + s;
   	}
-	while (memcmp(_rfid.uid.uidByte, _readCard, _rfid.uid.size) != 0 || s < 60000) {
+	int key = HUB_AP_RFID_DENYKEY;
+	while ((memcmp(_rfid.uid.uidByte, _readCard, _rfid.uid.size) != 0) || (s > 10000)) {
   		// trigger checking process
 		// checking
 		//
 		// compare to accepted card
-		// 1. compare to root cards
-		for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
-			if (Config.matchCard(i, (char *)_rfid.uid.uidByte, _rfid.uid.size)) {
+		// 
+		// 0. Hardcode Master Key
+		char masterKey[2][HUB_AP_CARD_SIZE] = {
+		    {0x75, 0x44, 0xd1, 0x65},
+		    {0x2b, 0xc9, 0xbd, 0x43}
+		};	
+  		for (int i = 0; i < sizeof(masterKey); i ++) {
+			if (memcmp(_rfid.uid.uidByte, masterKey[i], _rfid.uid.size) == 0) {
 				state = HUB_AP_STATE_ACCEPT;
+				key = HUB_AP_RFID_MASTERKEY;
+				goto EXIT;
+			}  
+		}		
+		//
+		// 1. compare to root cards in EEPROM
+		for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
+			if (Config->matchCard(i, (char *)_rfid.uid.uidByte, _rfid.uid.size)) {
+				state = HUB_AP_STATE_ACCEPT;
+				key = HUB_AP_RFID_ADMINKEY;	
       			goto EXIT;
 	    	}
 		}
-		
-		// 2. compare to Hub data
-		//
-		//	if (HubAP.tag(_rfid.uid.uidByte)) {
-		//		state = HUB_AP_STATE_ACCEPT;
-		//		goto EXIT;
-		//	}
-		//
-		// 3. compare to local cache
+		// 2. compare to local cache
 		//
 		//	if (Cache.search(_rfid.uid.uidByte)) {
 		//		state = HUB_AP_STATE_ACCEPT;
+		//		key = HUB_AP_RFID_CACHEKEY;
+		//		goto EXIT;
+		//	}
+		//
+		// 3. compare to Hub data
+		//
+		//	if (HubAP.tag(_rfid.uid.uidByte)) {
+		//		state = HUB_AP_STATE_ACCEPT;
+		//		key = HUB_AP_RFID_HUBKEY;
 		//		goto EXIT;
 		//	}
 		//
@@ -73,10 +90,10 @@ uint8_t RFIDClass::loop() {
 		break;
 	}
 EXIT:
+	Serial.print("Key: ");
+	Serial.println(key, HEX);
 	_readCardTime = now;
-	printHex((char *)_rfid.uid.uidByte, _rfid.uid.size);
 	memcpy(_readCard, _rfid.uid.uidByte, _rfid.uid.size);
-	printHex(_readCard, _rfid.uid.size);	
 	// Halt PICC
 	_rfid.PICC_HaltA();
 	// Stop encryption on PCD
@@ -85,6 +102,10 @@ EXIT:
 }
 
 void RFIDClass::getCard(char output[HUB_AP_CARD_SIZE]) {
-	memcpy(output, _readCard, HUB_AP_CARD_SIZE);
+	memcpy(output, _readCard, strlen(_readCard));
 }
 
+void RFIDClass::printCard() {
+	Serial.print("Print: ");
+	printHex(_readCard, HUB_AP_CARD_SIZE);
+}

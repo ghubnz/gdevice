@@ -6,28 +6,37 @@
 #include <ESP8266WiFi.h>
 #include <limits.h>
 
-#include "HubAP.h"
+#include "Config.h"
 
 // pins
 #define HUB_AP_RFID_SS 4 // D4
 #define HUB_AP_RFID_RST 16 // D2
 
+//
+#define HUB_AP_RFID_MASTERKEY	0x00
+#define HUB_AP_RFID_ADMINKEY	0x10
+#define HUB_AP_RFID_HUBKEY		0x20
+#define HUB_AP_RFID_CACHEKEY	0x30
+#define HUB_AP_RFID_DENYKEY		0xFF
+
 // RFID class
 class RFIDClass {
 	public:
-		RFIDClass();
+		RFIDClass(ConfigClass *config);
 		
 		uint8_t setup();
 		uint8_t loop();
 
 		void getCard(char[HUB_AP_CARD_SIZE]);
+
+		void printCard();
+
 	private:
 		MFRC522 _rfid;
 		MFRC522::MIFARE_Key _key;
 		char _readCard[HUB_AP_CARD_SIZE] = {0};
 		uint32_t _readCardTime = 0;
+		ConfigClass *Config;
 };
-
-static RFIDClass RFID;
 
 #endif // HUB_AP_RFID
