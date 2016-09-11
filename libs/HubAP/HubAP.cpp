@@ -43,7 +43,7 @@ uint8_t HubAPClass::loop(void *params ...) {
 	if (_state == HUB_AP_STATE_SETUP) {
 		return SetupService.loop();
 	}
-	if (100 > (millis() % 60000)) {
+	if (10 > (millis() % 60000)) {
 		_waitWiFi(4);
 	}
 	if (_state == HUB_AP_STATE_RFID) {
