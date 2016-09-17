@@ -23,6 +23,8 @@ void ConfigClass::load() {
 	LOAD(_wifiSSID, HUB_AP_WIFI_SSID_OFFSET, HUB_AP_WIFI_SSID_SIZE);
 	LOAD(_wifiPass, HUB_AP_WIFI_PASS_OFFSET, HUB_AP_WIFI_PASS_SIZE);
 	LOAD(_hubAddr, HUB_AP_ADDR_OFFSET, HUB_AP_ADDR_SIZE);
+	LOAD(_hubPort, HUB_AP_PORT_OFFSET, HUB_AP_PORT_SIZE);
+	LOAD(_hubPath, HUB_AP_PATH_OFFSET, HUB_AP_PATH_SIZE);
 	LOAD(_hubKey, HUB_AP_HUBKEY_OFFSET, HUB_AP_HUBKEY_SIZE);
 	LOAD(_secKey, HUB_AP_SECKEY_OFFSET, HUB_AP_SECKEY_SIZE);
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
@@ -35,6 +37,8 @@ void ConfigClass::dump() {
 	DUMP(_wifiSSID, HUB_AP_WIFI_SSID_OFFSET, HUB_AP_WIFI_SSID_SIZE);
 	DUMP(_wifiPass, HUB_AP_WIFI_PASS_OFFSET, HUB_AP_WIFI_PASS_SIZE);
 	DUMP(_hubAddr, HUB_AP_ADDR_OFFSET, HUB_AP_ADDR_SIZE);
+	DUMP(_hubPort, HUB_AP_PORT_OFFSET, HUB_AP_PORT_SIZE);
+	DUMP(_hubPath, HUB_AP_PATH_OFFSET, HUB_AP_PATH_SIZE);	
 	DUMP(_hubKey, HUB_AP_HUBKEY_OFFSET, HUB_AP_HUBKEY_SIZE);
 	DUMP(_secKey, HUB_AP_SECKEY_OFFSET, HUB_AP_SECKEY_SIZE);
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
@@ -78,12 +82,16 @@ bool ConfigClass::matchCard(int i, char card[HUB_AP_CARD_SIZE], int size) {
 SET(SSID, wifiSSID, HUB_AP_WIFI_SSID_SIZE);
 SET(Pass, wifiPass, HUB_AP_WIFI_PASS_SIZE);
 SET(HubAddr, hubAddr, HUB_AP_ADDR_SIZE);
+SET(HubPort, hubPort, HUB_AP_PORT_SIZE);
+SET(HubPath, hubPath, HUB_AP_PATH_SIZE);
 SET(HubKey, hubKey, HUB_AP_HUBKEY_SIZE);
 SET(SecKey, secKey, HUB_AP_SECKEY_SIZE);
 
 GET(SSID, wifiSSID);
 GET(Pass, wifiPass);
 GET(HubAddr, hubAddr);
+GET(HubPort, hubPort);
+GET(HubPath, hubPath);
 GET(HubKey, hubKey);
 GET(SecKey, secKey);
 

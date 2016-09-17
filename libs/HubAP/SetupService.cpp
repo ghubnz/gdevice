@@ -10,11 +10,21 @@ uint8_t SetupServiceClass::setup() {
 	// read the eeprom
 	char ssid[HUB_AP_WIFI_SSID_SIZE] = {0};
 	Config->getSSID(ssid);
-	if ((strlen(ssid) != 0) && (digitalRead(HUB_AP_SETUP_BTN) == LOW)) {
-		return HUB_AP_STATE_NONE;
+	if (strlen(ssid) == 0) {
+		goto SETUP;
 	}
+	for(int i = 0; i < 10; i ++) {
+		if(digitalRead(HUB_AP_SETUP_BTN) == HIGH) {
+			goto SETUP;
+		}
+		delay(200);
+	}
+	return HUB_AP_STATE_NONE;
+SETUP:
 	// if the configration is empty or setup button was pressed down
 	//start WiFi AP
+//	WiFi.mode(WIFI_AP);
+//	WiFi.disconnect();	
 	WiFi.softAP(HUB_AP_WIFI_SSID, HUB_AP_WIFI_PASS);
 	IPAddress apIP = WiFi.softAPIP();
 	Serial.print("AP IP address: ");
@@ -58,8 +68,18 @@ void SetupServiceClass::_handleRoot() {
 	page.replace("$SSID$", String(field));
 	Config->getPass(field);
 	page.replace("$PASS$", String(field));
+
 	Config->getHubAddr(field);
 	page.replace("$ADDR$", String(field));
+	Config->getHubPort(field);
+	page.replace("$PORT$", String(field));
+	Config->getHubPath(field);
+	if (strlen(field) == 0) {
+		page.replace("$PATH$", "/");
+	} else {
+		page.replace("$PATH$", String(field));
+	}
+	
 	Config->getHubKey(field);
 	page.replace("$HUBKEY$", String(field));
 	Config->getSecKey(field);
@@ -76,8 +96,10 @@ void SetupServiceClass::_handlePost() {
 	Config->setSSID(_server.arg("ssid").c_str());
 	Config->setPass(_server.arg("pass").c_str());
 	Config->setHubAddr(_server.arg("addr").c_str());
-	Config->setHubKey(_server.arg("hub_key").c_str());
-	Config->setSecKey(_server.arg("sec_key").c_str());
+	Config->setHubPort(_server.arg("port").c_str());
+	Config->setHubPath(_server.arg("path").c_str());	
+	Config->setHubKey(_server.arg("hubkey").c_str());
+	Config->setSecKey(_server.arg("seckey").c_str());
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 		Config->setCard(i, _server.arg(String("card") + String(i)).c_str());
 	}

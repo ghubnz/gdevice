@@ -7,12 +7,15 @@
 #include "Config.h"
 #include "SetupService.h"
 #include "RFID.h"
+#include "Client.h"
 
 // handler function 
 typedef uint8_t (*StateHandler)(uint8_t, void * ...);
 
 // main class
 class HubAPClass {
+	friend class ClientClass;
+
 	public:
 		HubAPClass();
 		
@@ -27,7 +30,8 @@ class HubAPClass {
 		void reset();
 
 		ConfigClass Config;
-		RFIDClass RFID = RFIDClass(&Config);
+		ClientClass Client = ClientClass(&Config);
+		RFIDClass RFID = RFIDClass(&Config, &Client);
 		SetupServiceClass SetupService = SetupServiceClass(&Config);
 	private:
 		uint8_t _state = HUB_AP_STATE_NONE;

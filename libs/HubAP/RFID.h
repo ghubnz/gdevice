@@ -7,6 +7,7 @@
 #include <limits.h>
 
 #include "Config.h"
+#include "Client.h"
 
 // pins
 #define HUB_AP_RFID_SS 4 // D4
@@ -22,7 +23,7 @@
 // RFID class
 class RFIDClass {
 	public:
-		RFIDClass(ConfigClass *config);
+		RFIDClass(ConfigClass*, ClientClass*);
 		
 		uint8_t setup();
 		uint8_t loop();
@@ -36,7 +37,8 @@ class RFIDClass {
 		MFRC522::MIFARE_Key _key;
 		char _readCard[HUB_AP_CARD_SIZE] = {0};
 		uint32_t _readCardTime = 0;
-		ConfigClass *Config;
+		ConfigClass *_config;
+		ClientClass *_client;
 };
 
 #endif // HUB_AP_RFID

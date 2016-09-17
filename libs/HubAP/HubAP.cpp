@@ -24,7 +24,7 @@ uint8_t HubAPClass::setup(uint8_t initState /* = HUB_AP_STATE_NONE*/) {
 	Serial.println("...SKIP");		
 
 	// connect WiFi
-	Serial.print("WiFi...");		
+	Serial.println("WiFi...");		
 	if (_connectWiFi()) {
 		Serial.println("...DONE");
 	} else {
@@ -41,7 +41,8 @@ uint8_t HubAPClass::setup(uint8_t initState /* = HUB_AP_STATE_NONE*/) {
 
 uint8_t HubAPClass::loop(void *params ...) {
 	if (_state == HUB_AP_STATE_SETUP) {
-		return SetupService.loop();
+		_state = SetupService.loop();
+		return _state;
 	}
 	if (10 > (millis() % 60000)) {
 		_waitWiFi(4);
@@ -71,25 +72,28 @@ void HubAPClass::setState(uint8_t state) {
 bool HubAPClass::_connectWiFi() {
 	// read SSID and Password from the config	
 	// Connect WiFi
+//	WiFi.mode(WIFI_STA);
+//	WiFi.disconnect();
 	char ssid[HUB_AP_WIFI_SSID_SIZE] = {0};
 	Config.getSSID(ssid);
-	Serial.print("SSID: ");
-	Serial.print(ssid);
+	Serial.printf("SSID: %s\n", ssid);
 	char pass[HUB_AP_WIFI_PASS_SIZE] = {0};
-	Serial.print(pass);	
-	WiFi.begin(ssid, pass);
+	Config.getPass(pass);
+	Serial.printf("Pass: %s\n", pass);
+	int a = WiFi.begin(ssid, pass);
+	Serial.printf("Rslt: %d\n", a);
 	return _waitWiFi(100);
 }
 
 bool HubAPClass::_waitWiFi(int tick) {
-	if (WiFi.status() == WL_CONNECTED) {
+	if (WiFi.isConnected()) {
 		return true;
 	}
 	String macStr = WiFi.macAddress();
 	memcpy(_macAddr, macStr.c_str(), 6);	
 	// Wait max to tick/50 seconds
 	for (int i = 0; i < tick; i ++) {
-		if (WiFi.status() == WL_CONNECTED) {
+		if (WiFi.isConnected()) {
 			Serial.printf("Connected: MAC=%s; SSID=%s\n", macStr.c_str(), WiFi.SSID().c_str());
 			return true;
 		}
@@ -105,6 +109,9 @@ bool HubAPClass::_waitWiFi(int tick) {
 		case WL_CONNECT_FAILED:
 			Serial.printf("Connect Failed: MAC=%s; SSID=%s\n", macStr.c_str(), WiFi.SSID().c_str());	
 			break;
+		default:
+			Serial.printf("Connect Issue: MAC=%s; SSID=%s\n", macStr.c_str(), WiFi.SSID().c_str());	
+			break;	
 	}
 	return false;
 }

@@ -31,15 +31,24 @@ form > div > input {
 			</div>
 			<div>
 				<label for="addr">Hub Address</label>				
-				<input id="addr" type="text" name="addr" placeholder="Address of the hub service" value="$ADDR$" maxlength="128">
+				<input id="addr" type="text" name="addr" placeholder="Address" value="$ADDR$" maxlength="64">
 			</div>
 			<div>
+				<label for="addr">Hub Port</label>				
+				<input id="port" type="text" name="port" placeholder="Port" value="$PORT$" maxlength="5">
+			</div>
+			<div>
+				<label for="addr">Hub Path</label>				
+				<input id="path" type="text" name="path" placeholder="Path" value="$PATH$" maxlength="128">
+			</div>
+	
+			<div>
 				<label for="hub_key">Hub Key</label>		
-				<input id="hub_key" type="text" name="hubkey" placeholder="Hub Key" maxlength="16" value="$HUBKEY$"> 
+				<input id="hubkey" type="text" name="hubkey" placeholder="Hub Key" maxlength="59" value="$HUBKEY$"> 
 			</div>
 			<div>
 				<label for="sec_key">Secrit Key</label>					
-				<input id="sec_key" type="text" name="seckey" placeholder="Secrit Key" maxlength="16" value="$SECKEY$"> 	
+				<input id="seckey" type="text" name="seckey" placeholder="Secrit Key" maxlength="16" value="$SECKEY$"> 	
 			</div>
 			$CARD$
 			<button type="submit">Save</button>

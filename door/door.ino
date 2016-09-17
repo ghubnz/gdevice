@@ -18,6 +18,8 @@ void initRelay() {
 }
 
 void setup() {
+  initRelay();
+  relayOff();
   HubAP.setup();
   HubAP.add(HUB_AP_STATE_ERROR, errHandler);
   HubAP.add(HUB_AP_STATE_ACCEPT, acceptHandler);
@@ -47,7 +49,11 @@ uint8_t acceptHandler(uint8_t state, void *params ...) {
   char num[HUB_AP_CARD_SIZE] = {0};  
   HubAP.RFID.getCard(num);
   Serial.print("ACCEPT: ");
+ 
   printHex(num, strlen(num));
   HubAP.flashLED(100);
+  relayOn();
+  delay(5000);
+  relayOff();
   return HUB_AP_STATE_RFID;
 }

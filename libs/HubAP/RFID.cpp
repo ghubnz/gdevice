@@ -1,9 +1,10 @@
 #include "RFID.h"
 
 // Public
-RFIDClass::RFIDClass(ConfigClass *config) {
+RFIDClass::RFIDClass(ConfigClass *config, ClientClass *client) {
 	_rfid = MFRC522(HUB_AP_RFID_SS, HUB_AP_RFID_RST);
-	Config = config;
+	_config = config;
+	_client = client;
 }
 
 uint8_t RFIDClass::setup() {	// Look for new cards
@@ -64,7 +65,7 @@ uint8_t RFIDClass::loop() {
 		//
 		// 1. compare to root cards in EEPROM
 		for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
-			if (Config->matchCard(i, (char *)_rfid.uid.uidByte, _rfid.uid.size)) {
+			if (_config->matchCard(i, (char *)_rfid.uid.uidByte, _rfid.uid.size)) {
 				state = HUB_AP_STATE_ACCEPT;
 				key = HUB_AP_RFID_ADMINKEY;	
       			goto EXIT;
@@ -79,6 +80,12 @@ uint8_t RFIDClass::loop() {
 		//	}
 		//
 		// 3. compare to Hub data
+		char buf[1 + _rfid.uid.size];
+		memcpy(buf, _rfid.uid.uidByte, _rfid.uid.size);
+		buf[_rfid.uid.size] = '\0';
+		_client->door(buf, (char *)_key.keyByte);	
+		// String payload("uid=%s&ap=%s");
+		// String body = Client->call("check", payload);
 		//
 		//	if (HubAP.tag(_rfid.uid.uidByte)) {
 		//		state = HUB_AP_STATE_ACCEPT;
