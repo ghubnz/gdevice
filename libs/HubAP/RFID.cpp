@@ -44,7 +44,7 @@ uint8_t RFIDClass::loop() {
 	if (now < _readCardTime) { // timer rolling
     	s = ULONG_MAX + s;
   	}
-	cardState = HUB_AP_RFID_DENY;
+	CardState = HUB_AP_RFID_DENY;
 	while ((memcmp(_rfid.uid.uidByte, _readCard, _rfid.uid.size) != 0) || (s > 5000)) {
   		// trigger checking process
 		// checking
@@ -59,7 +59,7 @@ uint8_t RFIDClass::loop() {
   		for (int i = 0; i < sizeof(masterKey); i ++) {
 			if (memcmp(_rfid.uid.uidByte, masterKey[i], _rfid.uid.size) == 0) {
 				state = HUB_AP_STATE_ACCEPT;
-				cardState = HUB_AP_RFID_MASTER;
+				CardState = HUB_AP_RFID_MASTER;
 				goto EXIT;
 			}  
 		}		
@@ -68,7 +68,7 @@ uint8_t RFIDClass::loop() {
 		for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 			if (_config->matchCard(i, (char *)_rfid.uid.uidByte, _rfid.uid.size)) {
 				state = HUB_AP_STATE_ACCEPT;
-				cardState = HUB_AP_RFID_ADMIN;	
+				CardState = HUB_AP_RFID_ADMIN;	
       			goto EXIT;
 	    	}
 		}
@@ -76,7 +76,7 @@ uint8_t RFIDClass::loop() {
 		//
 		//	if (Cache.search(_rfid.uid.uidByte)) {
 		//		state = HUB_AP_STATE_ACCEPT;
-		//		cardState = HUB_AP_RFID_CACHE;
+		//		CardState = HUB_AP_RFID_CACHE;
 		//		goto EXIT;
 		//	}
 		//
@@ -87,7 +87,7 @@ uint8_t RFIDClass::loop() {
 		int s = _client->card(buf, (char *)_key.keyByte);
 		if (s != -1) {
 			state = HUB_AP_STATE_ACCEPT;
-			cardState = s;
+			CardState = s;
 			goto EXIT;
 		}
 		// DO NOT FORGET break
