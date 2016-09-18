@@ -24,27 +24,28 @@ uint8_t RFIDClass::loop() {
 		return HUB_AP_STATE_RFID;
 
 	if (_rfid.uid.size > HUB_AP_CARD_SIZE) {
-		Serial.println(F("UID is out of range"));
+//		Serial.println(F("UID is out of range"));
 		return HUB_AP_STATE_ERROR;
 	}
 
+	/*
 	Serial.print(F("PICC type: "));
 	MFRC522::PICC_Type piccType = _rfid.PICC_GetType(_rfid.uid.sak);
 	Serial.println(_rfid.PICC_GetTypeName(piccType));
-
+*/
 	uint8_t state = HUB_AP_STATE_DENY;
 	// pre-checking
 	//
 	// compare to the last read card
 	// if not last read 
-	// or last read time greater than 1 min
+	// or last read time greater than 5 seconds
 	uint32_t now = millis();
 	uint32_t s = - _readCardTime + now ;
 	if (now < _readCardTime) { // timer rolling
     	s = ULONG_MAX + s;
   	}
-	int key = HUB_AP_RFID_DENYKEY;
-	while ((memcmp(_rfid.uid.uidByte, _readCard, _rfid.uid.size) != 0) || (s > 10000)) {
+	cardState = HUB_AP_RFID_DENY;
+	while ((memcmp(_rfid.uid.uidByte, _readCard, _rfid.uid.size) != 0) || (s > 5000)) {
   		// trigger checking process
 		// checking
 		//
@@ -58,7 +59,7 @@ uint8_t RFIDClass::loop() {
   		for (int i = 0; i < sizeof(masterKey); i ++) {
 			if (memcmp(_rfid.uid.uidByte, masterKey[i], _rfid.uid.size) == 0) {
 				state = HUB_AP_STATE_ACCEPT;
-				key = HUB_AP_RFID_MASTERKEY;
+				cardState = HUB_AP_RFID_MASTER;
 				goto EXIT;
 			}  
 		}		
@@ -67,7 +68,7 @@ uint8_t RFIDClass::loop() {
 		for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 			if (_config->matchCard(i, (char *)_rfid.uid.uidByte, _rfid.uid.size)) {
 				state = HUB_AP_STATE_ACCEPT;
-				key = HUB_AP_RFID_ADMINKEY;	
+				cardState = HUB_AP_RFID_ADMIN;	
       			goto EXIT;
 	    	}
 		}
@@ -75,7 +76,7 @@ uint8_t RFIDClass::loop() {
 		//
 		//	if (Cache.search(_rfid.uid.uidByte)) {
 		//		state = HUB_AP_STATE_ACCEPT;
-		//		key = HUB_AP_RFID_CACHEKEY;
+		//		cardState = HUB_AP_RFID_CACHE;
 		//		goto EXIT;
 		//	}
 		//
@@ -83,22 +84,16 @@ uint8_t RFIDClass::loop() {
 		char buf[1 + _rfid.uid.size];
 		memcpy(buf, _rfid.uid.uidByte, _rfid.uid.size);
 		buf[_rfid.uid.size] = '\0';
-		_client->card(buf, (char *)_key.keyByte);	
-		// String payload("uid=%s&ap=%s");
-		// String body = Client->call("check", payload);
-		//
-		//	if (HubAP.tag(_rfid.uid.uidByte)) {
-		//		state = HUB_AP_STATE_ACCEPT;
-		//		key = HUB_AP_RFID_HUBKEY;
-		//		goto EXIT;
-		//	}
-		//
+		int s = _client->card(buf, (char *)_key.keyByte);
+		if (s != -1) {
+			state = HUB_AP_STATE_ACCEPT;
+			cardState = s;
+			goto EXIT;
+		}
 		// DO NOT FORGET break
 		break;
 	}
 EXIT:
-	Serial.print("Key: ");
-	Serial.println(key, HEX);
 	_readCardTime = now;
 	memcpy(_readCard, _rfid.uid.uidByte, _rfid.uid.size);
 	// Halt PICC

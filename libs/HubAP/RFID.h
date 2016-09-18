@@ -14,11 +14,11 @@
 #define HUB_AP_RFID_RST 16 // D2
 
 //
-#define HUB_AP_RFID_MASTERKEY	0x00
-#define HUB_AP_RFID_ADMINKEY	0x10
-#define HUB_AP_RFID_HUBKEY		0x20
-#define HUB_AP_RFID_CACHEKEY	0x30
-#define HUB_AP_RFID_DENYKEY		0xFF
+#define HUB_AP_RFID_MASTER	0x00
+#define HUB_AP_RFID_ADMIN	0x10
+#define HUB_AP_RFID_HUB		0x20
+#define HUB_AP_RFID_CACHE	0x30
+#define HUB_AP_RFID_DENY		0xFF
 
 // RFID class
 class RFIDClass {
@@ -32,6 +32,7 @@ class RFIDClass {
 
 		void printCard();
 
+		uint32_t CardState = HUB_AP_RFID_DENY;
 	private:
 		MFRC522 _rfid;
 		MFRC522::MIFARE_Key _key;

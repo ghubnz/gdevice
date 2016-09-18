@@ -94,7 +94,8 @@ bool HubAPClass::_waitWiFi(int tick) {
 	// Wait max to tick/50 seconds
 	for (int i = 0; i < tick; i ++) {
 		if (WiFi.isConnected()) {
-			Serial.printf("Connected: MAC=%s; SSID=%s\n", macStr.c_str(), WiFi.SSID().c_str());
+			Serial.printf("Connected: MAC=%s; SSID=%s; IP=", macStr.c_str(), WiFi.SSID().c_str());
+			Serial.println(WiFi.localIP());
 			return true;
 		}
 		flashLED(50);

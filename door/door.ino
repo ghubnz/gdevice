@@ -1,4 +1,9 @@
+#define DEBUG_ESP_HTTP_CLIENT 1
+#define DEBUG_ESP_PORT 1
+
 #include <HubAP.h>
+
+
 
 // user defined state range 0x50 <= state <= 0xFF
 #define HUB_AP_STATE_RUN 0x50
@@ -48,8 +53,9 @@ uint8_t denyHandler(uint8_t state, void *params ...) {
 uint8_t acceptHandler(uint8_t state, void *params ...) {  
   char num[HUB_AP_CARD_SIZE] = {0};  
   HubAP.RFID.getCard(num);
-  Serial.print("ACCEPT: ");
- 
+  Serial.print("Source: "); 
+  Serial.print(HubAP.RFID.CardState);
+  Serial.print(" ACCEPT: "); 
   printHex(num, strlen(num));
   HubAP.flashLED(100);
   relayOn();
