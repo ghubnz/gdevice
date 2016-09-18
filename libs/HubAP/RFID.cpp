@@ -83,7 +83,7 @@ uint8_t RFIDClass::loop() {
 		char buf[1 + _rfid.uid.size];
 		memcpy(buf, _rfid.uid.uidByte, _rfid.uid.size);
 		buf[_rfid.uid.size] = '\0';
-		_client->door(buf, (char *)_key.keyByte);	
+		_client->card(buf, (char *)_key.keyByte);	
 		// String payload("uid=%s&ap=%s");
 		// String body = Client->call("check", payload);
 		//

@@ -27,7 +27,7 @@ String ClientClass::call(char *api, char *payload) {
 	return body;
 }
 
-bool ClientClass::door(char *uid, char *apid) {
+bool ClientClass::card(char *uid, char *apid) {
 	char buf[15 + sizeof(uid)];
 	sprintf(buf, "uid=%s&ap=%s", uid, apid);	
 	Serial.println(call("card", buf));

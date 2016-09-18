@@ -10,7 +10,7 @@ class ClientClass {
 		ClientClass(ConfigClass *config);
 
 		String call(char *api, char *payload);
-		bool door(char *uid, char *apid);
+		bool card(char *uid, char *apid);
 	private:
 		ConfigClass *Config;
 };
