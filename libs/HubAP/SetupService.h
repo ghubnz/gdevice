@@ -10,7 +10,10 @@
 #include "Config.h"
 #include "html.h"
 
-#define HUB_AP_SETUP_BTN 15
+// #define HUB_AP_SETUP_BTN 15 // D10
+#define HUB_AP_SETUP_BTN 5 // D3
+
+
 
 String redirectPage(String, String, String); 
 

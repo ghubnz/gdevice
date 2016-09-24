@@ -11,7 +11,8 @@
 
 // pins
 #define HUB_AP_RFID_SS 4 // D4
-#define HUB_AP_RFID_RST 16 // D2
+// #define HUB_AP_RFID_RST 16 // D2
+#define HUB_AP_RFID_RST 0 // D8
 
 //
 #define HUB_AP_RFID_MASTER	0x00

@@ -8,7 +8,8 @@
 // user defined state range 0x50 <= state <= 0xFF
 #define HUB_AP_STATE_RUN 0x50
 // relay
-#define RELAY_PIN     5 // D8
+// #define RELAY_PIN     5 // D3
+#define RELAY_PIN     16 // D2
 
 void relayOn() {
 	digitalWrite(RELAY_PIN, LOW);	
