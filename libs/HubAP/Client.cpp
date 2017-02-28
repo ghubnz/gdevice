@@ -44,7 +44,7 @@ String ClientClass::call(char *api, char *payload) {
 	// Use WiFiClientSecure class to create TLS connection
 	WiFiClientSecure client;
 	if (!client.connect(addr, String(port).toInt())) {
-		return "";
+		return "-1";
 	}
 
 	client.print(String("POST ") + String(path) + String(api) + " HTTP/1.1\r\n" +

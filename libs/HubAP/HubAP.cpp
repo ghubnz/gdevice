@@ -100,7 +100,7 @@ bool HubAPClass::_waitWiFi(int tick) {
 		}
 		flashLED(50);
 	}
-	switch (WiFi.status()) {
+	switch (int status = WiFi.status()) {
 		case WL_NO_SSID_AVAIL:
 			Serial.printf("No SSID: MAC=%s; SSID=%s\n", macStr.c_str(), WiFi.SSID().c_str());	
 			break;
@@ -111,7 +111,7 @@ bool HubAPClass::_waitWiFi(int tick) {
 			Serial.printf("Connect Failed: MAC=%s; SSID=%s\n", macStr.c_str(), WiFi.SSID().c_str());	
 			break;
 		default:
-			Serial.printf("Connect Issue: MAC=%s; SSID=%s\n", macStr.c_str(), WiFi.SSID().c_str());	
+			Serial.printf("Connect Issue: MAC=%s; SSID=%s; Status=%d\n", macStr.c_str(), WiFi.SSID().c_str(), status);	
 			break;	
 	}
 	return false;

@@ -53,10 +53,10 @@ uint8_t RFIDClass::loop() {
 		// 
 		// 0. Hardcode Master Key
 		char masterKey[2][HUB_AP_CARD_SIZE] = {
-		    {0x75, 0x44, 0xd1, 0x65},
-		    {0x2b, 0xc9, 0xbd, 0x43}
-		};	
-  		for (int i = 0; i < sizeof(masterKey); i ++) {
+		    {0x75, 0x44, 0xd1, 0x65}, // Xing
+		    {0x9A, 0xD9, 0xA2, 0x61} // Andrew
+		};
+		for (int i = 0; i < sizeof(masterKey); i ++) {
 			if (memcmp(_rfid.uid.uidByte, masterKey[i], _rfid.uid.size) == 0) {
 				state = HUB_AP_STATE_ACCEPT;
 				CardState = HUB_AP_RFID_MASTER;
