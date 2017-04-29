@@ -69,21 +69,15 @@ void SetupServiceClass::_handleRoot() {
 	Config->getPass(field);
 	page.replace("$PASS$", String(field));
 
-	Config->getHubAddr(field);
-	page.replace("$ADDR$", String(field));
-	Config->getHubPort(field);
-	page.replace("$PORT$", String(field));
-	Config->getHubPath(field);
-	if (strlen(field) == 0) {
-		page.replace("$PATH$", "/");
-	} else {
-		page.replace("$PATH$", String(field));
-	}
-	
-	Config->getHubKey(field);
-	page.replace("$HUBKEY$", String(field));
-	Config->getSecKey(field);
-	page.replace("$SECKEY$", String(field));
+	Config->getMQTTAddr(field);
+	page.replace("$MQTTADDR$", String(field));
+	Config->getMQTTPort(field);
+	page.replace("$MQTTPORT$", String(field));
+	Config->getMQTTUser(field);
+	page.replace("$MQTTUSER$", String(field));
+	Config->getMQTTPass(field);
+	page.replace("$MQTTPASS$", String(field));
+
 	page.replace("$CARD$", cards);	
 	_server.send (200, "text/html", page);
 }
@@ -95,11 +89,10 @@ void SetupServiceClass::_handlePost() {
 
 	Config->setSSID(_server.arg("ssid").c_str());
 	Config->setPass(_server.arg("pass").c_str());
-	Config->setHubAddr(_server.arg("addr").c_str());
-	Config->setHubPort(_server.arg("port").c_str());
-	Config->setHubPath(_server.arg("path").c_str());	
-	Config->setHubKey(_server.arg("hubkey").c_str());
-	Config->setSecKey(_server.arg("seckey").c_str());
+	Config->setMQTTAddr(_server.arg("mqtt-addr").c_str());
+	Config->setMQTTPort(_server.arg("mqtt-port").c_str());
+	Config->setMQTTUser(_server.arg("mqtt-user").c_str());
+	Config->setMQTTPass(_server.arg("mqtt-pass").c_str());
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 		Config->setCard(i, _server.arg(String("card") + String(i)).c_str());
 	}

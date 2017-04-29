@@ -4,25 +4,23 @@
 #define HUB_AP_WIFI_SSID "MeshedNET"
 // #define HUB_AP_WIFI_SSID "GHub"
 #define HUB_AP_WIFI_PASS "rfidrfidrfid"
-#define HUB_AP_SERIAL_SPEED 115200
+#define HUB_AP_SERIAL_SPEED 9600
 
 #define HUB_AP_WIFI_SSID_OFFSET	0
 #define HUB_AP_WIFI_SSID_SIZE	32
-#define HUB_AP_WIFI_PASS_OFFSET HUB_AP_WIFI_SSID_OFFSET + HUB_AP_WIFI_SSID_SIZE //32
+#define HUB_AP_WIFI_PASS_OFFSET HUB_AP_WIFI_SSID_OFFSET + HUB_AP_WIFI_SSID_SIZE
 #define HUB_AP_WIFI_PASS_SIZE	64
 
-#define HUB_AP_ADDR_OFFSET HUB_AP_WIFI_PASS_OFFSET + HUB_AP_WIFI_PASS_SIZE // 96
-#define HUB_AP_ADDR_SIZE 128
-#define HUB_AP_PORT_OFFSET HUB_AP_ADDR_OFFSET + HUB_AP_ADDR_SIZE // 96
-#define HUB_AP_PORT_SIZE 5
-#define HUB_AP_PATH_OFFSET HUB_AP_PORT_OFFSET + HUB_AP_PORT_SIZE // 96
-#define HUB_AP_PATH_SIZE 128
+#define HUB_AP_MQTT_ADDR_OFFSET HUB_AP_WIFI_PASS_OFFSET + HUB_AP_WIFI_PASS_SIZE
+#define HUB_AP_MQTT_ADDR_SIZE 128
+#define HUB_AP_MQTT_PORT_OFFSET HUB_AP_MQTT_ADDR_OFFSET + HUB_AP_MQTT_ADDR_SIZE
+#define HUB_AP_MQTT_PORT_SIZE 5
 
-#define HUB_AP_HUBKEY_OFFSET HUB_AP_PATH_OFFSET + HUB_AP_PATH_SIZE
-#define HUB_AP_HUBKEY_SIZE 59
-#define HUB_AP_SECKEY_OFFSET HUB_AP_HUBKEY_OFFSET + HUB_AP_HUBKEY_SIZE
-#define HUB_AP_SECKEY_SIZE 16
-#define HUB_AP_CARD_OFFSET HUB_AP_SECKEY_OFFSET + HUB_AP_SECKEY_SIZE
+#define HUB_AP_MQTT_USER_OFFSET HUB_AP_MQTT_PORT_OFFSET + HUB_AP_MQTT_PORT_SIZE
+#define HUB_AP_MQTT_USER_SIZE 64
+#define HUB_AP_MQTT_PASS_OFFSET HUB_AP_MQTT_USER_OFFSET + HUB_AP_MQTT_USER_SIZE
+#define HUB_AP_MQTT_PASS_SIZE 64
+#define HUB_AP_CARD_OFFSET HUB_AP_MQTT_PASS_OFFSET + HUB_AP_MQTT_PASS_SIZE
 #define HUB_AP_CARD_SIZE 16
 #define HUB_AP_CARD_NUM 4
 
@@ -36,6 +34,7 @@
 #define HUB_AP_STATE_RFID	0x20
 #define HUB_AP_STATE_ACCEPT	0x30
 #define HUB_AP_STATE_DENY	0x31
+#define HUB_AP_STATE_WAIT	0x32
 
 #define HUB_AP_EEPROM_SIZE HUB_AP_CARD_OFFSET + \
 	( HUB_AP_CARD_SIZE * HUB_AP_CARD_NUM ) // 320 = 256 + ( 16 * 4 )
@@ -59,23 +58,21 @@ class ConfigClass {
 		void setSSID(const char*);
 		void setPass(const char*);
 	
-		void setHubAddr(const char*);
-		void setHubPort(const char*);
-		void setHubPath(const char*);
-	
-		void setHubKey(const char*);
-		void setSecKey(const char*);
+		void setMQTTAddr(const char*);
+		void setMQTTPort(const char*);
+		void setMQTTUser(const char*);
+		void setMQTTPass(const char*);
+
 		void setCard(int, const char*);
 	
 		void getSSID(char *);
 		void getPass(char *);
 		
-		void getHubAddr(char *);
-		void getHubPort(char *);
-		void getHubPath(char *);
+		void getMQTTAddr(char *);
+		void getMQTTPort(char *);
+		void getMQTTUser(char *);
+		void getMQTTPass(char *);
 
-		void getHubKey(char *);
-		void getSecKey(char *);
 		void getCard(int, char *);
 
 		bool matchCard(int, char [HUB_AP_CARD_SIZE], int);
@@ -83,12 +80,11 @@ class ConfigClass {
 		char _wifiSSID[HUB_AP_WIFI_SSID_SIZE + 1] = {0};
 		char _wifiPass[HUB_AP_WIFI_PASS_SIZE + 1] = {0};
 
-		char _hubAddr[HUB_AP_ADDR_SIZE + 1] = {0};
-		char _hubPort[HUB_AP_PORT_SIZE + 1] = {0};
-		char _hubPath[HUB_AP_PATH_SIZE + 1] = {0};
-		
-		char _hubKey[HUB_AP_HUBKEY_SIZE + 1] = {0};
-		char _secKey[HUB_AP_SECKEY_SIZE + 1] = {0};
+		char _mqttAddr[HUB_AP_MQTT_ADDR_SIZE + 1] = {0};
+		char _mqttPort[HUB_AP_MQTT_PASS_SIZE + 1] = {0};	
+		char _mqttUser[HUB_AP_MQTT_USER_SIZE + 1] = {0};
+		char _mqttPass[HUB_AP_MQTT_PASS_SIZE + 1] = {0};
+
 		char _card[HUB_AP_CARD_NUM][HUB_AP_CARD_SIZE + 1] = {{0}};
 };
 void printHex(char *buffer, int bufferSize);

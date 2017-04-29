@@ -1,10 +1,10 @@
 #include "RFID.h"
 
 // Public
-RFIDClass::RFIDClass(ConfigClass *config, ClientClass *client) {
+RFIDClass::RFIDClass(ConfigClass *config, NodeClass *node) {
 	_rfid = MFRC522(HUB_AP_RFID_SS, HUB_AP_RFID_RST);
 	_config = config;
-	_client = client;
+	_node = node;
 }
 
 uint8_t RFIDClass::setup() {	// Look for new cards
@@ -84,12 +84,8 @@ uint8_t RFIDClass::loop() {
 		char buf[1 + _rfid.uid.size];
 		memcpy(buf, _rfid.uid.uidByte, _rfid.uid.size);
 		buf[_rfid.uid.size] = '\0';
-		int s = _client->card(buf, (char *)_key.keyByte);
-		if (s != -1) {
-			state = HUB_AP_STATE_ACCEPT;
-			CardState = s;
-			goto EXIT;
-		}
+		state = _node->card(buf, (char *)_key.keyByte);
+		CardState = s;
 		// DO NOT FORGET break
 		break;
 	}

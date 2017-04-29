@@ -51,6 +51,10 @@ uint8_t HubAPClass::loop(void *params ...) {
 		_state = RFID.loop();
 		return _state;
 	}
+	if (_state == HUB_AP_STATE_WAIT) {
+		_state = Node.wait();
+		return _state;
+	}
 	if (_states[_state] == NULL) {
 		_state = _states[HUB_AP_STATE_ERROR](_state, params);
 	}
