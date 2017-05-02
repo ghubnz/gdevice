@@ -18,12 +18,15 @@ class NodeClass {
 		ConfigClass *_config;
 		WiFiClient _client;
 		PubSubClient _mqtt = PubSubClient(_client);
-		char *_inTopic = NULL;
-		bool _finish = false;
+		uint8_t _finish = HUB_AP_STATE_WAIT;
 		int _retry = 0;
+		char _subTopic[HUB_AP_MQTT_TOPIC_SIZE] = {0};
+		char _pubTopic[HUB_AP_MQTT_TOPIC_SIZE] = {0};	
+		char _token[HUB_AP_CARD_SIZE] = {0};
 
 		void _callback(char* topic, byte* payload, unsigned int length);
 		uint8_t _reconnect();
 };
 
+void gen_random(char *s, const int len);
 #endif // HUB_AP_NODE

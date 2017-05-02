@@ -3,13 +3,13 @@
 // Public
 SetupServiceClass::SetupServiceClass(ConfigClass *config) {
 	pinMode(HUB_AP_SETUP_BTN, INPUT);
-	Config = config;
+	_config = config;
 }
 
 uint8_t SetupServiceClass::setup() {
 	// read the eeprom
 	char ssid[HUB_AP_WIFI_SSID_SIZE] = {0};
-	Config->getSSID(ssid);
+	_config->getSSID(ssid);
 	if (strlen(ssid) == 0) {
 		goto SETUP;
 	}
@@ -58,27 +58,27 @@ void SetupServiceClass::_handleRoot() {
 		cards += String(HUB_AP_HTML_CARD);
 		cards.replace("$I$", String(i));
 		char card[HUB_AP_CARD_SIZE] = {0};
-		Config->getCard(i, card);
+		_config->getCard(i, card);
 		cards.replace("$NUM$", String(card));
 	}	
 	String page = String(HUB_AP_HTML_ROOT);
 	char field[HUB_AP_EEPROM_SIZE] = {0};
-	Config->getSSID(field);
+	_config->getSSID(field);
 	page.replace("$SSID$", String(field));
-	Config->getPass(field);
+	_config->getPass(field);
 	page.replace("$PASS$", String(field));
 
-	Config->getMQTTAddr(field);
+	_config->getMQTTAddr(field);
 	page.replace("$MQTTADDR$", String(field));
-	Config->getMQTTPort(field);
+	_config->getMQTTPort(field);
 	page.replace("$MQTTPORT$", String(field));
-	Config->getMQTTUser(field);
+	_config->getMQTTUser(field);
 	page.replace("$MQTTUSER$", String(field));
-	Config->getMQTTPass(field);
+	_config->getMQTTPass(field);
 	page.replace("$MQTTPASS$", String(field));
-	Config->getMQTTTopic(field);
+	_config->getMQTTTopic(field);
 	page.replace("$MQTTTOPIC$", String(field));
-	Config->getMQTTClientId(field);
+	_config->getMQTTClientId(field);
 	page.replace("$MQTTCLIENTID$", String(field));
 
 	page.replace("$CARD$", cards);	
@@ -90,26 +90,26 @@ void SetupServiceClass::_handlePost() {
 	_server.sendHeader("Location", "/");
 	_server.send (302, "text/plain", "Config updated...\n\n");	
 
-	Config->setSSID(_server.arg("ssid").c_str());
-	Config->setPass(_server.arg("pass").c_str());
-	Config->setMQTTAddr(_server.arg("mqtt-addr").c_str());
-	Config->setMQTTPort(_server.arg("mqtt-port").c_str());
-	Config->setMQTTUser(_server.arg("mqtt-user").c_str());
-	Config->setMQTTPass(_server.arg("mqtt-pass").c_str());
-	Config->setMQTTTopic(_server.arg("mqtt-topic").c_str());
-	Config->setMQTTClientId(_server.arg("mqtt-client-id").c_str());
+	_config->setSSID(_server.arg("ssid").c_str());
+	_config->setPass(_server.arg("pass").c_str());
+	_config->setMQTTAddr(_server.arg("mqtt-addr").c_str());
+	_config->setMQTTPort(_server.arg("mqtt-port").c_str());
+	_config->setMQTTUser(_server.arg("mqtt-user").c_str());
+	_config->setMQTTPass(_server.arg("mqtt-pass").c_str());
+	_config->setMQTTTopic(_server.arg("mqtt-topic").c_str());
+	_config->setMQTTClientId(_server.arg("mqtt-client-id").c_str());
 	
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
-		Config->setCard(i, _server.arg(String("card") + String(i)).c_str());
+		_config->setCard(i, _server.arg(String("card") + String(i)).c_str());
 	}
-	Config->dump();
+	_config->dump();
 }
 
 void SetupServiceClass::_handleReset() {
 	Serial.println("Reset handle");
 	_server.send (200, "text/html",
 			redirectPage("3", "/", "Resetting..."));
-	Config->clean();
+	_config->clean();
 }
 
 void SetupServiceClass::_handleRestart() {
@@ -121,7 +121,7 @@ void SetupServiceClass::_handleRestart() {
 
 void SetupServiceClass::_handleDebug() {
 	Serial.println("Debug handle");
-	_server.send (200, "text/plain", String(Config->debug()));
+	_server.send (200, "text/plain", String(_config->debug()));
 }
 
 void SetupServiceClass::_handleNotFound() {
