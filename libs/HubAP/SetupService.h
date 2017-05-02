@@ -32,7 +32,7 @@ class SetupServiceClass {
 		void _handleReset();
 		void _handleDebug();
 
-		ESP8266WebServer _server;
+		ESP8266WebServer _server = ESP8266WebServer();
 		ConfigClass *Config;
 
 };

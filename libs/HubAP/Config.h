@@ -6,20 +6,27 @@
 #define HUB_AP_WIFI_PASS "rfidrfidrfid"
 #define HUB_AP_SERIAL_SPEED 9600
 
+// WiFi
 #define HUB_AP_WIFI_SSID_OFFSET	0
 #define HUB_AP_WIFI_SSID_SIZE	32
 #define HUB_AP_WIFI_PASS_OFFSET HUB_AP_WIFI_SSID_OFFSET + HUB_AP_WIFI_SSID_SIZE
-#define HUB_AP_WIFI_PASS_SIZE	64
+#define HUB_AP_WIFI_PASS_SIZE	32
 
+// MQTT
 #define HUB_AP_MQTT_ADDR_OFFSET HUB_AP_WIFI_PASS_OFFSET + HUB_AP_WIFI_PASS_SIZE
-#define HUB_AP_MQTT_ADDR_SIZE 128
+#define HUB_AP_MQTT_ADDR_SIZE 64
 #define HUB_AP_MQTT_PORT_OFFSET HUB_AP_MQTT_ADDR_OFFSET + HUB_AP_MQTT_ADDR_SIZE
 #define HUB_AP_MQTT_PORT_SIZE 5
-
 #define HUB_AP_MQTT_USER_OFFSET HUB_AP_MQTT_PORT_OFFSET + HUB_AP_MQTT_PORT_SIZE
-#define HUB_AP_MQTT_USER_SIZE 64
+#define HUB_AP_MQTT_USER_SIZE 32
 #define HUB_AP_MQTT_PASS_OFFSET HUB_AP_MQTT_USER_OFFSET + HUB_AP_MQTT_USER_SIZE
-#define HUB_AP_MQTT_PASS_SIZE 64
+#define HUB_AP_MQTT_PASS_SIZE 32
+#define HUB_AP_MQTT_TOPIC_OFFSET HUB_AP_MQTT_PASS_OFFSET + HUB_AP_MQTT_PASS_SIZE
+#define HUB_AP_MQTT_TOPIC_SIZE 32
+#define HUB_AP_MQTT_CLIENTID_OFFSET HUB_AP_MQTT_TOPIC_OFFSET + HUB_AP_MQTT_TOPIC_SIZE
+#define HUB_AP_MQTT_CLIENTID_SIZE 32
+
+// Card
 #define HUB_AP_CARD_OFFSET HUB_AP_MQTT_PASS_OFFSET + HUB_AP_MQTT_PASS_SIZE
 #define HUB_AP_CARD_SIZE 16
 #define HUB_AP_CARD_NUM 4
@@ -35,9 +42,10 @@
 #define HUB_AP_STATE_ACCEPT	0x30
 #define HUB_AP_STATE_DENY	0x31
 #define HUB_AP_STATE_WAIT	0x32
+#define HUB_AP_STATE_TIMEOUT 0x33
 
 #define HUB_AP_EEPROM_SIZE HUB_AP_CARD_OFFSET + \
-	( HUB_AP_CARD_SIZE * HUB_AP_CARD_NUM ) // 320 = 256 + ( 16 * 4 )
+	( HUB_AP_CARD_SIZE * HUB_AP_CARD_NUM )
 
 // led
 #define HUB_AP_LED LED_BUILTIN
@@ -62,6 +70,8 @@ class ConfigClass {
 		void setMQTTPort(const char*);
 		void setMQTTUser(const char*);
 		void setMQTTPass(const char*);
+		void setMQTTTopic(const char*);
+		void setMQTTClientId(const char*);
 
 		void setCard(int, const char*);
 	
@@ -72,6 +82,8 @@ class ConfigClass {
 		void getMQTTPort(char *);
 		void getMQTTUser(char *);
 		void getMQTTPass(char *);
+		void getMQTTTopic(char*);
+		void getMQTTClientId(char*);
 
 		void getCard(int, char *);
 
@@ -84,6 +96,8 @@ class ConfigClass {
 		char _mqttPort[HUB_AP_MQTT_PASS_SIZE + 1] = {0};	
 		char _mqttUser[HUB_AP_MQTT_USER_SIZE + 1] = {0};
 		char _mqttPass[HUB_AP_MQTT_PASS_SIZE + 1] = {0};
+		char _mqttTopic[HUB_AP_MQTT_TOPIC_SIZE + 1] = {0};
+		char _mqttClientId[HUB_AP_MQTT_CLIENTID_SIZE + 1] = {0};
 
 		char _card[HUB_AP_CARD_NUM][HUB_AP_CARD_SIZE + 1] = {{0}};
 };

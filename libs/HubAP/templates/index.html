@@ -27,7 +27,7 @@ form > div > input {
 			</div>
 			<div>
 				<label for="pass">WiFi Passphrase</label>	
-				<input id="pass" type="text" name="pass" placeholder="WiFi Passphrase" maxlength="64" value="$PASS$"> 
+				<input id="pass" type="text" name="pass" placeholder="WiFi Passphrase" maxlength="32" value="$PASS$"> 
 			</div>
 			<div>
 				<label for="mqttaddr">MQTT Address</label>				
@@ -39,11 +39,19 @@ form > div > input {
 			</div>
 			<div>
 				<label for="mqttuser">MQTT User</label>		
-				<input id="mqttuser" type="text" name="mqtt-user" placeholder="MQTT User" maxlength="64" value="$MQTTUSER$"> 
+				<input id="mqttuser" type="text" name="mqtt-user" placeholder="MQTT User" maxlength="32" value="$MQTTUSER$"> 
 			</div>
 			<div>
 				<label for="mqttpass">MQTT Pass</label>					
-				<input id="mqttpass" type="text" name="mqtt-pass" placeholder="MQTT Pass" maxlength="64" value="$MQTTPASS$"> 	
+				<input id="mqttpass" type="text" name="mqtt-pass" placeholder="MQTT Pass" maxlength="32" value="$MQTTPASS$"> 	
+			</div>
+			<div>
+				<label for="mqtttopic">MQTT Topic</label>					
+				<input id="mqtttopic" type="text" name="mqtt-topic" placeholder="MQTT Topic" maxlength="32" value="$MQTTTOPIC$"> 	
+			</div>
+			<div>
+				<label for="mqttclientid">MQTT Client Id</label>					
+				<input id="mqttclientid" type="text" name="mqtt-client-id" placeholder="MQTT Client Id" maxlength="32" value="$MQTTCLIENTID$"> 	
 			</div>
 			$CARD$
 			<button type="submit">Save</button>

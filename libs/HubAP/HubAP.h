@@ -14,8 +14,6 @@ typedef uint8_t (*StateHandler)(uint8_t, void * ...);
 
 // main class
 class HubAPClass {
-	friend class NodeClass;
-
 	public:
 		HubAPClass();
 		
@@ -30,9 +28,9 @@ class HubAPClass {
 		void reset();
 
 		ConfigClass Config;
+		SetupServiceClass SetupService = SetupServiceClass(&Config);
 		NodeClass Node = NodeClass(&Config);
 		RFIDClass RFID = RFIDClass(&Config, &Node);
-		SetupServiceClass SetupService = SetupServiceClass(&Config);
 	private:
 		uint8_t _state = HUB_AP_STATE_NONE;
 		uint8_t _macAddr[6];

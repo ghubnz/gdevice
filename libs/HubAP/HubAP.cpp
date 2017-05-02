@@ -4,6 +4,7 @@ HubAPClass::HubAPClass() {
 	Config.load();
 	// serial speed
 	Serial.begin(HUB_AP_SERIAL_SPEED);
+	while (!Serial) {;}
 	Serial.printf("Serial speed: %d\n", HUB_AP_SERIAL_SPEED);
 
 	// buildin LED
@@ -30,6 +31,12 @@ uint8_t HubAPClass::setup(uint8_t initState /* = HUB_AP_STATE_NONE*/) {
 	} else {
 		Serial.println("...SKIP");
 	}
+
+	Serial.print("Setup MQTT...");	
+	if (Node.setup() == HUB_AP_STATE_ERROR) {
+		Serial.println("...NOT CONNECT");	
+	}
+	Serial.println("...DONE");
 	
 	// RFID
 	Serial.print("RFID...");		
@@ -52,7 +59,7 @@ uint8_t HubAPClass::loop(void *params ...) {
 		return _state;
 	}
 	if (_state == HUB_AP_STATE_WAIT) {
-		_state = Node.wait();
+		_state = Node.loop();
 		return _state;
 	}
 	if (_states[_state] == NULL) {
@@ -76,8 +83,8 @@ void HubAPClass::setState(uint8_t state) {
 bool HubAPClass::_connectWiFi() {
 	// read SSID and Password from the config	
 	// Connect WiFi
-//	WiFi.mode(WIFI_STA);
-//	WiFi.disconnect();
+	WiFi.mode(WIFI_STA);
+	WiFi.disconnect();
 	char ssid[HUB_AP_WIFI_SSID_SIZE] = {0};
 	Config.getSSID(ssid);
 	Serial.printf("SSID: %s\n", ssid);

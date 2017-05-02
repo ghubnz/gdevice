@@ -23,14 +23,13 @@ uint8_t SetupServiceClass::setup() {
 SETUP:
 	// if the configration is empty or setup button was pressed down
 	//start WiFi AP
-//	WiFi.mode(WIFI_AP);
-//	WiFi.disconnect();	
+	WiFi.mode(WIFI_AP);
+	WiFi.disconnect();	
 	WiFi.softAP(HUB_AP_WIFI_SSID, HUB_AP_WIFI_PASS);
 	IPAddress apIP = WiFi.softAPIP();
 	Serial.print("AP IP address: ");
 	Serial.print(apIP);
 	//start HTTP service
-	_server = ESP8266WebServer(80);
 	std::function<void(void)> hRoot = [&]{this->_handleRoot();};
 	_server.on("/", hRoot);
 	std::function<void(void)> hPost = [&]{this->_handlePost();};
@@ -77,6 +76,10 @@ void SetupServiceClass::_handleRoot() {
 	page.replace("$MQTTUSER$", String(field));
 	Config->getMQTTPass(field);
 	page.replace("$MQTTPASS$", String(field));
+	Config->getMQTTTopic(field);
+	page.replace("$MQTTTOPIC$", String(field));
+	Config->getMQTTClientId(field);
+	page.replace("$MQTTCLIENTID$", String(field));
 
 	page.replace("$CARD$", cards);	
 	_server.send (200, "text/html", page);
@@ -93,6 +96,9 @@ void SetupServiceClass::_handlePost() {
 	Config->setMQTTPort(_server.arg("mqtt-port").c_str());
 	Config->setMQTTUser(_server.arg("mqtt-user").c_str());
 	Config->setMQTTPass(_server.arg("mqtt-pass").c_str());
+	Config->setMQTTTopic(_server.arg("mqtt-topic").c_str());
+	Config->setMQTTClientId(_server.arg("mqtt-client-id").c_str());
+	
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 		Config->setCard(i, _server.arg(String("card") + String(i)).c_str());
 	}

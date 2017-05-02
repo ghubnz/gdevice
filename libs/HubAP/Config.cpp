@@ -22,10 +22,14 @@ ConfigClass::ConfigClass() {
 void ConfigClass::load() {
 	LOAD(_wifiSSID, HUB_AP_WIFI_SSID_OFFSET, HUB_AP_WIFI_SSID_SIZE);
 	LOAD(_wifiPass, HUB_AP_WIFI_PASS_OFFSET, HUB_AP_WIFI_PASS_SIZE);
+
 	LOAD(_mqttAddr, HUB_AP_MQTT_ADDR_OFFSET, HUB_AP_MQTT_ADDR_SIZE);
 	LOAD(_mqttPort, HUB_AP_MQTT_PORT_OFFSET, HUB_AP_MQTT_PORT_SIZE);
 	LOAD(_mqttUser, HUB_AP_MQTT_USER_OFFSET, HUB_AP_MQTT_USER_SIZE);
-	LOAD(_mqttPass, HUB_AP_MQTT_PASS_OFFSET, HUB_AP_MQTT_USER_SIZE);
+	LOAD(_mqttPass, HUB_AP_MQTT_PASS_OFFSET, HUB_AP_MQTT_PASS_SIZE);
+	LOAD(_mqttTopic, HUB_AP_MQTT_TOPIC_OFFSET, HUB_AP_MQTT_TOPIC_SIZE);
+	LOAD(_mqttClientId, HUB_AP_MQTT_CLIENTID_OFFSET, HUB_AP_MQTT_CLIENTID_SIZE);	
+
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 		LOAD(_card[i], HUB_AP_CARD_OFFSET + i * HUB_AP_CARD_SIZE, HUB_AP_CARD_SIZE);
 	}
@@ -35,10 +39,15 @@ void ConfigClass::dump() {
 	clean();
 	DUMP(_wifiSSID, HUB_AP_WIFI_SSID_OFFSET, HUB_AP_WIFI_SSID_SIZE);
 	DUMP(_wifiPass, HUB_AP_WIFI_PASS_OFFSET, HUB_AP_WIFI_PASS_SIZE);
+
 	DUMP(_mqttAddr, HUB_AP_MQTT_ADDR_OFFSET, HUB_AP_MQTT_ADDR_SIZE);
 	DUMP(_mqttPort, HUB_AP_MQTT_PORT_OFFSET, HUB_AP_MQTT_PORT_SIZE);
 	DUMP(_mqttUser, HUB_AP_MQTT_USER_OFFSET, HUB_AP_MQTT_USER_SIZE);	
 	DUMP(_mqttPass, HUB_AP_MQTT_PASS_OFFSET, HUB_AP_MQTT_PASS_SIZE);
+	DUMP(_mqttTopic, HUB_AP_MQTT_TOPIC_OFFSET, HUB_AP_MQTT_TOPIC_SIZE);
+	DUMP(_mqttClientId, HUB_AP_MQTT_CLIENTID_OFFSET, HUB_AP_MQTT_CLIENTID_SIZE);
+
+
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 		DUMP(_card[i], HUB_AP_CARD_OFFSET + i * HUB_AP_CARD_SIZE, HUB_AP_CARD_SIZE);
 	}
@@ -83,6 +92,8 @@ SET(MQTTAddr, mqttAddr, HUB_AP_MQTT_ADDR_SIZE);
 SET(MQTTPort, mqttPort, HUB_AP_MQTT_PORT_SIZE);
 SET(MQTTUser, mqttUser, HUB_AP_MQTT_USER_SIZE);
 SET(MQTTPass, mqttPass, HUB_AP_MQTT_PASS_SIZE);
+SET(MQTTTopic, mqttTopic, HUB_AP_MQTT_TOPIC_SIZE);
+SET(MQTTClientId, mqttClientId, HUB_AP_MQTT_CLIENTID_SIZE);
 
 GET(SSID, wifiSSID);
 GET(Pass, wifiPass);
@@ -90,6 +101,8 @@ GET(MQTTAddr, mqttAddr);
 GET(MQTTPort, mqttPort);
 GET(MQTTUser, mqttUser);
 GET(MQTTPass, mqttPass);
+GET(MQTTTopic, mqttTopic);
+GET(MQTTClientId, mqttClientId);
 
 void ConfigClass::clean() {
 	for (int i = 0; i < HUB_AP_EEPROM_SIZE; i++) {
@@ -115,9 +128,10 @@ String ConfigClass::debug() {
 }
 
 void printHex(char *buffer, int bufferSize) {
+	Serial.print("x");	
 	for (byte i = 0; i < bufferSize; i++) {
 		Serial.print(buffer[i] < 0x10 ? " 0" : " ");
 		Serial.print(buffer[i], HEX);
 	}
-  Serial.println();
+	Serial.println();
 }
