@@ -23,10 +23,13 @@ class NodeClass {
 		char _subTopic[HUB_AP_MQTT_TOPIC_SIZE] = {0};
 		char _pubTopic[HUB_AP_MQTT_TOPIC_SIZE] = {0};	
 		char _token[HUB_AP_CARD_SIZE] = {0};
+		char _user[HUB_AP_MQTT_USER_SIZE] = {0};
+		char _pass[HUB_AP_MQTT_PASS_SIZE] = {0};
+		char _clientId[HUB_AP_MQTT_CLIENTID_SIZE] = {0};
+		char _addr[HUB_AP_MQTT_ADDR_SIZE] = {0};
+		int _port = 0;
 
 		void _callback(char* topic, byte* payload, unsigned int length);
 		uint8_t _reconnect();
 };
-
-void gen_random(char *s, const int len);
 #endif // HUB_AP_NODE

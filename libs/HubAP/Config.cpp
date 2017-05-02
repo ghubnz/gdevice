@@ -33,6 +33,12 @@ void ConfigClass::load() {
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 		LOAD(_card[i], HUB_AP_CARD_OFFSET + i * HUB_AP_CARD_SIZE, HUB_AP_CARD_SIZE);
 	}
+	if (strlen(_mqttTopic) == 0) {
+		gen_random(_mqttTopic, HUB_AP_MQTT_TOPIC_SIZE);
+	}
+	if (strlen(_mqttClientId) == 0) {
+		gen_random(_mqttClientId, HUB_AP_MQTT_CLIENTID_SIZE);
+	}
 }
 
 void ConfigClass::dump() {
@@ -134,4 +140,16 @@ void printHex(char *buffer, int bufferSize) {
 		Serial.print(buffer[i], HEX);
 	}
 	Serial.println();
+}
+
+void gen_random(char *s, const int len) {
+    static const char alphanum[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+
+    for (int i = 0; i < len; ++i) {
+        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+    s[len] = 0;
 }
