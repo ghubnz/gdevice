@@ -3,8 +3,6 @@
 
 #include <HubAP.h>
 
-
-
 // user defined state range 0x50 <= state <= 0xFF
 #define HUB_AP_STATE_RUN 0x50
 // relay
@@ -24,12 +22,12 @@ void initRelay() {
 }
 
 void setup() {
-  initRelay();
-  relayOff();
   HubAP.setup();
   HubAP.add(HUB_AP_STATE_ERROR, errHandler);
   HubAP.add(HUB_AP_STATE_ACCEPT, acceptHandler);
   HubAP.add(HUB_AP_STATE_DENY, denyHandler);
+  initRelay();
+  relayOff();
 }
 
 void loop() {
@@ -64,3 +62,5 @@ uint8_t acceptHandler(uint8_t state, void *params ...) {
   relayOff();
   return HUB_AP_STATE_RFID;
 }
+
+
