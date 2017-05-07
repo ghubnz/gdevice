@@ -26,6 +26,7 @@ void setup() {
   HubAP.add(HUB_AP_STATE_ERROR, errHandler);
   HubAP.add(HUB_AP_STATE_ACCEPT, acceptHandler);
   HubAP.add(HUB_AP_STATE_DENY, denyHandler);
+  HubAP.add(HUB_AP_STATE_TIMEOUT, denyHandler);
   initRelay();
   relayOff();
 }
