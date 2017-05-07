@@ -10,13 +10,17 @@ uint8_t NodeClass::setup() {
 	_config->getMQTTClientId(_clientId);
 	_config->getMQTTUser(_user);
 	_config->getMQTTPass(_pass);	
-	_config->getMQTTAddr(_addr);	
+	_config->getMQTTAddr(_addr);
+	
+
 	char port[HUB_AP_MQTT_PORT_SIZE] = {0};
 	_config->getMQTTPort(port);
 	_port = atoi(port);
-	
+
+	gen_random(_token, HUB_AP_CARD_SIZE);
 	gen_random(_subTopic, HUB_AP_MQTT_TOPIC_SIZE);
- 	_mqtt.setServer(_addr, _port);
+	
+	_mqtt.setServer(_addr, _port);
 	_mqtt.setCallback([this](char* topic, byte* payload, unsigned int length){
 		_callback(topic, payload, length);		
 	});
@@ -49,20 +53,14 @@ int NodeClass::card(char *uid, char *apid) {
 	if (_reconnect() == HUB_AP_STATE_ERROR) {
 		return HUB_AP_STATE_DENY;
 	}
-	// {"uid":"","topic":"","token":""}
-	int l = 8 + 11 + 11 + 2 + HUB_AP_MQTT_TOPIC_SIZE + HUB_AP_CARD_SIZE + sizeof(uid);
-	char buf[l];
-	snprintf (buf, 8, "{\"uid\":\"");   
-	snprintf (buf, sizeof(uid), uid);
-	snprintf (buf, 11, "\",\"topic\":\"");
-	snprintf (buf, HUB_AP_MQTT_TOPIC_SIZE, _subTopic);
-	snprintf (buf, 11, "\",\"token\":\"");
-	gen_random(_token, HUB_AP_CARD_SIZE);
-	snprintf (buf, HUB_AP_CARD_SIZE, _token);
-	snprintf (buf, 2, "\"}");
-	Serial.print("Publish message: ");
-	Serial.println(buf);
-	_mqtt.publish(_pubTopic, buf); 
+	StaticJsonBuffer<100> jsonBuffer;
+	JsonObject& root = jsonBuffer.createObject();
+  	root["uid"] = sprintHex(uid, strlen(uid));
+	root["topic"] = _subTopic;
+	root["token"] = _token;
+	String s;
+	root.printTo(s);
+	_mqtt.publish(_pubTopic, s.c_str());
 	return HUB_AP_STATE_WAIT;
 }
 
@@ -78,7 +76,7 @@ void NodeClass::_callback(char* topic, byte* payload, unsigned int length) {
 	char token[length + 1];
 	memcpy(token, payload, length);
 	token[length] = '\0';
-	if ((strcmp(topic, _pubTopic) == 0) && (strcmp(token, _token) == 0)) {
+	if ((strcmp(topic, _subTopic) == 0) && (strcmp(token, _token) == 0)) {
 		_finish = HUB_AP_STATE_ACCEPT;
 		return;
 	}
@@ -115,4 +113,15 @@ uint8_t NodeClass::_reconnect() {
 	}
 	_finish = HUB_AP_STATE_WAIT;
 	return HUB_AP_STATE_ERROR;
+}
+
+void NodeClass::debug() {
+	Serial.println(_port);
+	Serial.println(_pubTopic);
+	Serial.println(_subTopic);
+	Serial.println(_token);
+	Serial.println(_addr);
+	Serial.println(_user);
+	Serial.println(_pass);
+	Serial.println(_clientId);
 }

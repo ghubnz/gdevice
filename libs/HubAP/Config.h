@@ -102,5 +102,6 @@ class ConfigClass {
 		char _card[HUB_AP_CARD_NUM][HUB_AP_CARD_SIZE + 1] = {{0}};
 };
 void printHex(char *buffer, int bufferSize);
+String sprintHex(char *buffer, int bufferSize);
 void gen_random(char *s, const int len);
 #endif // HUB_AP_CONFIG

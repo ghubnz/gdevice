@@ -16,15 +16,16 @@ uint8_t RFIDClass::setup() {	// Look for new cards
 }
 
 uint8_t RFIDClass::loop() {
-	if ( ! _rfid.PICC_IsNewCardPresent())
+	if ( ! _rfid.PICC_IsNewCardPresent()) {
 		return HUB_AP_STATE_RFID;
+	}
 
 	// Verify if the NUID has been readed
-	if ( ! _rfid.PICC_ReadCardSerial())
+	if ( ! _rfid.PICC_ReadCardSerial()) {
 		return HUB_AP_STATE_RFID;
+	}
 
 	if (_rfid.uid.size > HUB_AP_CARD_SIZE) {
-//		Serial.println(F("UID is out of range"));
 		return HUB_AP_STATE_ERROR;
 	}
 
@@ -32,7 +33,8 @@ uint8_t RFIDClass::loop() {
 	Serial.print(F("PICC type: "));
 	MFRC522::PICC_Type piccType = _rfid.PICC_GetType(_rfid.uid.sak);
 	Serial.println(_rfid.PICC_GetTypeName(piccType));
-*/
+	*/
+
 	uint8_t state = HUB_AP_STATE_DENY;
 	// pre-checking
 	//
@@ -62,7 +64,7 @@ uint8_t RFIDClass::loop() {
 				CardState = HUB_AP_RFID_MASTER;
 				goto EXIT;
 			}  
-		}		
+		}
 		//
 		// 1. compare to root cards in EEPROM
 		for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {

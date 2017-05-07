@@ -34,7 +34,7 @@ void ConfigClass::load() {
 		LOAD(_card[i], HUB_AP_CARD_OFFSET + i * HUB_AP_CARD_SIZE, HUB_AP_CARD_SIZE);
 	}
 	if (strlen(_mqttTopic) == 0) {
-		gen_random(_mqttTopic, HUB_AP_MQTT_TOPIC_SIZE);
+		sprintf(_mqttTopic, "iot/rfid");
 	}
 	if (strlen(_mqttClientId) == 0) {
 		gen_random(_mqttClientId, HUB_AP_MQTT_CLIENTID_SIZE);
@@ -140,6 +140,14 @@ void printHex(char *buffer, int bufferSize) {
 		Serial.print(buffer[i], HEX);
 	}
 	Serial.println();
+}
+
+String sprintHex(char *buffer, int bufferSize) {
+	String s;
+	for (byte i = 0; i < bufferSize; i++) {
+		s += String(buffer[i], HEX);
+	}
+	return s;
 }
 
 void gen_random(char *s, const int len) {
