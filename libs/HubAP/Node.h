@@ -2,6 +2,7 @@
 #define HUB_AP_NODE
 
 #include <ESP8266WiFi.h>
+#include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "Config.h"
@@ -18,7 +19,7 @@ class NodeClass {
 		void debug();
 	private:
 		ConfigClass *_config;
-		WiFiClient _client;
+		WiFiClientSecure _client;
 		PubSubClient _mqtt = PubSubClient(_client);
 		uint8_t _finish = HUB_AP_STATE_WAIT;
 		int _retry = 0;
