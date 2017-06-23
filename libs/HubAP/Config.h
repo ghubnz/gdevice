@@ -1,9 +1,9 @@
 #ifndef HUB_AP_CONFIG
 #define HUB_AP_CONFIG
 
-#define HUB_AP_WIFI_SSID "MeshedNET"
+#define HUB_AP_WIFI_SSID "GHub-SetupService"
 // #define HUB_AP_WIFI_SSID "GHub"
-#define HUB_AP_WIFI_PASS "rfidrfidrfid"
+#define HUB_AP_WIFI_PASS "Gis4Great"
 #define HUB_AP_SERIAL_SPEED 9600
 
 // WiFi
