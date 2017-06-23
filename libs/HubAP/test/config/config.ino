@@ -3,7 +3,7 @@
 ConfigClass Config;
 
 void setup() {
-    Config.clean();
+  Config.clean();
 }
 
 void loop() {

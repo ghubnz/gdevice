@@ -16,6 +16,7 @@
 
 // Public
 ConfigClass::ConfigClass() {
+	randomSeed(analogRead(0));
 	EEPROM.begin(HUB_AP_EEPROM_SIZE);
 }
 
@@ -34,7 +35,7 @@ void ConfigClass::load() {
 		LOAD(_card[i], HUB_AP_CARD_OFFSET + i * HUB_AP_CARD_SIZE, HUB_AP_CARD_SIZE);
 	}
 	if (strlen(_mqttTopic) == 0) {
-		sprintf(_mqttTopic, "iot/rfid");
+		sprintf(_mqttTopic, "iot:rfid");
 	}
 	if (strlen(_mqttClientId) == 0) {
 		gen_random(_mqttClientId, HUB_AP_MQTT_CLIENTID_SIZE);
@@ -157,7 +158,7 @@ void gen_random(char *s, const int len) {
         "abcdefghijklmnopqrstuvwxyz";
 
     for (int i = 0; i < len; ++i) {
-        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+        s[i] = alphanum[random(0, sizeof(alphanum) - 1)];
     }
     s[len] = 0;
 }
