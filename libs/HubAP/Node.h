@@ -14,6 +14,7 @@ class NodeClass {
 		
 		uint8_t setup();
 		uint8_t loop();
+		void preloop();
 
 		int card(char *uid, char *apid);
 		void debug();

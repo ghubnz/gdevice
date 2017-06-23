@@ -11,10 +11,12 @@ uint8_t SetupServiceClass::setup() {
 	char ssid[HUB_AP_WIFI_SSID_SIZE] = {0};
 	_config->getSSID(ssid);
 	if (strlen(ssid) == 0) {
+		Serial.println("Empty SSID");
 		goto SETUP;
 	}
 	for(int i = 0; i < 10; i ++) {
 		if(digitalRead(HUB_AP_SETUP_BTN) == HIGH) {
+			Serial.println("Setup button pressed");
 			goto SETUP;
 		}
 		delay(200);

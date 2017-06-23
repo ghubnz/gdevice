@@ -27,11 +27,16 @@ uint8_t NodeClass::setup() {
 	return _reconnect();
 }
 
-uint8_t NodeClass::loop() {
+void NodeClass::preloop() {
 	if (_reconnect() == HUB_AP_STATE_ERROR) {
-		return HUB_AP_STATE_DENY;
+		return;
 	}
-	_mqtt.loop();
+	if (false == _mqtt.loop()) {
+		Serial.println("MQTT Disconnected");
+	}
+}
+
+uint8_t NodeClass::loop() {
 	if (_finish == HUB_AP_STATE_ACCEPT) {
 		_finish = HUB_AP_STATE_WAIT;
 		return HUB_AP_STATE_ACCEPT;
@@ -61,6 +66,11 @@ int NodeClass::card(char *uid, char *apid) {
 	String s;
 	root.printTo(s);
 	_mqtt.publish(_pubTopic, s.c_str());
+	Serial.print("Publish [");
+	Serial.print(_pubTopic);
+	Serial.print("] => [");
+	Serial.print(s);
+	Serial.println("] ");
 	return HUB_AP_STATE_WAIT;
 }
 

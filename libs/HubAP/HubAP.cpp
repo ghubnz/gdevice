@@ -54,6 +54,7 @@ uint8_t HubAPClass::loop(void *params ...) {
 	if (10 > (millis() % 60000)) {
 		_waitWiFi(4);
 	}
+	Node.preloop();
 	if (_state == HUB_AP_STATE_RFID) {
 		_state = RFID.loop();
 		return _state;
