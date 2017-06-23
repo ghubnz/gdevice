@@ -16,7 +16,7 @@
 
 // Public
 ConfigClass::ConfigClass() {
-	randomSeed(analogRead(0));
+	randomSeed(analogRead(HUB_RAND_PIN));
 	EEPROM.begin(HUB_AP_EEPROM_SIZE);
 }
 

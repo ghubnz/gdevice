@@ -49,6 +49,7 @@
 
 // led
 #define HUB_AP_LED LED_BUILTIN
+#define HUB_RAND_PIN 0 // GPIO 3
 
 #include <SPI.h>
 #include <EEPROM.h>
