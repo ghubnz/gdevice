@@ -34,8 +34,9 @@ void NodeClass::preloop() {
 		Serial.println("MQTT Disconnected");
 	}
 	unsigned long now = millis();
+	// TODO customise frequency of heartbeat
 	if ( (now < _lastHeartbeat) || (now - _lastHeartbeat) > 1000 * 30 ) {
-		// TODO customising heartbeat topic
+		// TODO customise heartbeat topic
 		_mqtt.publish(HUB_AP_MQTT_HEARTBEAT, _clientId);
 		_lastHeartbeat = now;
 	}
