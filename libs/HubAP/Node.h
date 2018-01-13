@@ -32,6 +32,7 @@ class NodeClass {
 		char _addr[HUB_AP_MQTT_ADDR_SIZE + 1] = {0};
 		char _subTopic[HUB_AP_MQTT_TOPIC_SIZE + 1] = {0};
 		int _port = 0;
+		unsigned long _lastHeartbeat = 0;
 
 		void _callback(char* topic, byte* payload, unsigned int length);
 		uint8_t _reconnect();

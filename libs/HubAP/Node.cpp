@@ -11,7 +11,6 @@ uint8_t NodeClass::setup() {
 	_config->getMQTTUser(_user);
 	_config->getMQTTPass(_pass);	
 	_config->getMQTTAddr(_addr);
-	
 
 	char port[HUB_AP_MQTT_PORT_SIZE] = {0};
 	_config->getMQTTPort(port);
@@ -33,6 +32,12 @@ void NodeClass::preloop() {
 	}
 	if (false == _mqtt.loop()) {
 		Serial.println("MQTT Disconnected");
+	}
+	unsigned long now = millis();
+	if ( (now < _lastHeartbeat) || (now - _lastHeartbeat) > 1000 * 30 ) {
+		// TODO customising heartbeat topic
+		_mqtt.publish(HUB_AP_MQTT_HEARTBEAT, _clientId);
+		_lastHeartbeat = now;
 	}
 }
 
