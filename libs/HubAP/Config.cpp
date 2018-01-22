@@ -28,14 +28,18 @@ void ConfigClass::load() {
 	LOAD(_mqttPort, HUB_AP_MQTT_PORT_OFFSET, HUB_AP_MQTT_PORT_SIZE);
 	LOAD(_mqttUser, HUB_AP_MQTT_USER_OFFSET, HUB_AP_MQTT_USER_SIZE);
 	LOAD(_mqttPass, HUB_AP_MQTT_PASS_OFFSET, HUB_AP_MQTT_PASS_SIZE);
-	LOAD(_mqttTopic, HUB_AP_MQTT_TOPIC_OFFSET, HUB_AP_MQTT_TOPIC_SIZE);
+	LOAD(_mqttTopicRFID, HUB_AP_MQTT_TOPIC_RFID_OFFSET, HUB_AP_MQTT_TOPIC_SIZE);
+	LOAD(_mqttTopicHeartbeat, HUB_AP_MQTT_TOPIC_HEARTBEAT_OFFSET, HUB_AP_MQTT_TOPIC_SIZE);
 	LOAD(_mqttClientId, HUB_AP_MQTT_CLIENTID_OFFSET, HUB_AP_MQTT_CLIENTID_SIZE);	
 
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 		LOAD(_card[i], HUB_AP_CARD_OFFSET + i * HUB_AP_CARD_SIZE, HUB_AP_CARD_SIZE);
 	}
-	if (strlen(_mqttTopic) == 0) {
-		sprintf(_mqttTopic, "iot:rfid");
+	if (strlen(_mqttTopicRFID) == 0) {
+		sprintf(_mqttTopicRFID, HUB_AP_MQTT_TOPIC_RFID);
+	}
+	if (strlen(_mqttTopicHeartbeat) == 0) {
+		sprintf(_mqttTopicHeartbeat, HUB_AP_MQTT_TOPIC_HEARTBEAT);
 	}
 	if (strlen(_mqttClientId) == 0) {
 		gen_random(_mqttClientId, HUB_AP_MQTT_CLIENTID_SIZE);
@@ -51,7 +55,8 @@ void ConfigClass::dump() {
 	DUMP(_mqttPort, HUB_AP_MQTT_PORT_OFFSET, HUB_AP_MQTT_PORT_SIZE);
 	DUMP(_mqttUser, HUB_AP_MQTT_USER_OFFSET, HUB_AP_MQTT_USER_SIZE);	
 	DUMP(_mqttPass, HUB_AP_MQTT_PASS_OFFSET, HUB_AP_MQTT_PASS_SIZE);
-	DUMP(_mqttTopic, HUB_AP_MQTT_TOPIC_OFFSET, HUB_AP_MQTT_TOPIC_SIZE);
+	DUMP(_mqttTopicRFID, HUB_AP_MQTT_TOPIC_RFID_OFFSET, HUB_AP_MQTT_TOPIC_SIZE);
+	DUMP(_mqttTopicHeartbeat, HUB_AP_MQTT_TOPIC_HEARTBEAT_OFFSET, HUB_AP_MQTT_TOPIC_SIZE);	
 	DUMP(_mqttClientId, HUB_AP_MQTT_CLIENTID_OFFSET, HUB_AP_MQTT_CLIENTID_SIZE);
 
 
@@ -99,7 +104,8 @@ SET(MQTTAddr, mqttAddr, HUB_AP_MQTT_ADDR_SIZE);
 SET(MQTTPort, mqttPort, HUB_AP_MQTT_PORT_SIZE);
 SET(MQTTUser, mqttUser, HUB_AP_MQTT_USER_SIZE);
 SET(MQTTPass, mqttPass, HUB_AP_MQTT_PASS_SIZE);
-SET(MQTTTopic, mqttTopic, HUB_AP_MQTT_TOPIC_SIZE);
+SET(MQTTTopicRFID, mqttTopicRFID, HUB_AP_MQTT_TOPIC_SIZE);
+SET(MQTTTopicHeartbeat, mqttTopicHeartbeat, HUB_AP_MQTT_TOPIC_SIZE);
 SET(MQTTClientId, mqttClientId, HUB_AP_MQTT_CLIENTID_SIZE);
 
 GET(SSID, wifiSSID);
@@ -108,7 +114,8 @@ GET(MQTTAddr, mqttAddr);
 GET(MQTTPort, mqttPort);
 GET(MQTTUser, mqttUser);
 GET(MQTTPass, mqttPass);
-GET(MQTTTopic, mqttTopic);
+GET(MQTTTopicRFID, mqttTopicRFID);
+GET(MQTTTopicHeartbeat, mqttTopicHeartbeat);
 GET(MQTTClientId, mqttClientId);
 
 void ConfigClass::clean() {

@@ -35,7 +35,7 @@ form > div > input {
 			</div>
 			<div>
 				<label for="mqttport">MQTT Port</label>				
-				<input id="mqttport" type="text" name="mqtt-port" placeholder="MQTT Port" value="$MQTTPORT$" maxlength="5">
+				<input id="mqttport" type="number" name="mqtt-port" placeholder="MQTT Port" value="$MQTTPORT$" min="1" max="65535">
 			</div>
 			<div>
 				<label for="mqttuser">MQTT User</label>		
@@ -46,13 +46,21 @@ form > div > input {
 				<input id="mqttpass" type="text" name="mqtt-pass" placeholder="MQTT Pass" maxlength="32" value="$MQTTPASS$"> 	
 			</div>
 			<div>
-				<label for="mqtttopic">MQTT Topic</label>					
-				<input id="mqtttopic" type="text" name="mqtt-topic" placeholder="MQTT Topic" maxlength="32" value="$MQTTTOPIC$"> 	
-			</div>
-			<div>
 				<label for="mqttclientid">MQTT Client Id</label>					
 				<input id="mqttclientid" type="text" name="mqtt-client-id" placeholder="MQTT Client Id" maxlength="32" value="$MQTTCLIENTID$"> 	
+			</div>		
+			<div>
+				<label for="mqtttopicrfid">MQTT Topic</label>					
+				<input id="mqtttopicrfid" type="text" name="mqtt-topic-rfid" placeholder="MQTT Topic" maxlength="32" value="$MQTTTOPICRFID$"> 	
 			</div>
+			<div>
+				<label for="mqtttopichb">MQTT Heartbeat Topic</label>					
+				<input id="mqtttopichb" type="text" name="mqtt-topic-heartbeat" placeholder="MQTT Heartbeat Topic" maxlength="32" value="$MQTTTOPICHEARTBEAT$"> 	
+			</div>	
+			<div>
+				<label for="mqtthbtick">MQTT Heartbeat Tick (Seconds)</label>					
+				<input id="mqtthbtick" type="number" name="mqtt-heartbeat-tick" placeholder="MQTT Heartbeat Tick" min="1" value="$MQTTHEARTBEATTICK$"> 	
+			</div>		
 			$CARD$
 			<button type="submit">Save</button>
 		</form>
