@@ -23,9 +23,12 @@
 #define HUB_AP_MQTT_PASS_SIZE 32
 
 
-#define HUB_AP_MQTT_TOPIC_SIZE 32
 #define HUB_AP_MQTT_TOPIC_RFID_OFFSET HUB_AP_MQTT_PASS_OFFSET + HUB_AP_MQTT_PASS_SIZE
+#define HUB_AP_MQTT_TOPIC_SIZE 32
 #define HUB_AP_MQTT_TOPIC_HEARTBEAT_OFFSET HUB_AP_MQTT_TOPIC_RFID_OFFSET + HUB_AP_MQTT_TOPIC_SIZE
+#define HUB_AP_MQTT_HBTICK_OFFSET HUB_AP_MQTT_TOPIC_HEARTBEAT_OFFSET + HUB_AP_MQTT_TOPIC_SIZE
+#define HUB_AP_MQTT_HBTICK_SIZE 5
+#define HUB_AP_MQTT_HBTICK_DEFAULT "60"
 
 #define HUB_AP_MQTT_CLIENTID_OFFSET HUB_AP_MQTT_TOPIC_HEARTBEAT_OFFSET + HUB_AP_MQTT_TOPIC_SIZE
 #define HUB_AP_MQTT_CLIENTID_SIZE 32
@@ -78,7 +81,9 @@ class ConfigClass {
 		void setMQTTPort(const char*);
 		void setMQTTUser(const char*);
 		void setMQTTPass(const char*);
-		void setMQTTTopic(const char*);
+		void setMQTTTopicRFID(const char*);
+		void setMQTTTopicHeartbeat(const char*);
+		void setMQTTHeartbeatTick(const char*);
 		void setMQTTClientId(const char*);
 
 		void setCard(int, const char*);
@@ -90,7 +95,9 @@ class ConfigClass {
 		void getMQTTPort(char *);
 		void getMQTTUser(char *);
 		void getMQTTPass(char *);
-		void getMQTTTopic(char*);
+		void getMQTTTopicRFID(char*);
+		void getMQTTTopicHeartbeat(char *);
+		void getMQTTHeartbeatTick(char *);
 		void getMQTTClientId(char*);
 
 		void getCard(int, char *);
@@ -106,6 +113,7 @@ class ConfigClass {
 		char _mqttPass[HUB_AP_MQTT_PASS_SIZE + 1] = {0};
 		char _mqttTopicRFID[HUB_AP_MQTT_TOPIC_SIZE + 1] = {0};
 		char _mqttTopicHeartbeat[HUB_AP_MQTT_TOPIC_SIZE + 1] = {0};	
+		char _mqttHeartbeatTick[HUB_AP_MQTT_HBTICK_SIZE + 1] = {0};	
 		char _mqttClientId[HUB_AP_MQTT_CLIENTID_SIZE + 1] = {0};
 
 		char _card[HUB_AP_CARD_NUM][HUB_AP_CARD_SIZE + 1] = {{0}};

@@ -24,7 +24,9 @@ class NodeClass {
 		PubSubClient _mqtt = PubSubClient(_client);
 		uint8_t _finish = HUB_AP_STATE_WAIT;
 		int _retry = 0;
-		char _pubTopic[HUB_AP_MQTT_TOPIC_SIZE + 1] = {0};	
+		char _pubTopicRFID[HUB_AP_MQTT_TOPIC_SIZE + 1] = {0};	
+		char _pubTopicHeartbeat[HUB_AP_MQTT_TOPIC_SIZE + 1] = {0};
+		int _heartbeatTick = 60;
 		char _token[HUB_AP_CARD_SIZE + 1] = {0};
 		char _user[HUB_AP_MQTT_USER_SIZE + 1] = {0};
 		char _pass[HUB_AP_MQTT_PASS_SIZE + 1] = {0};

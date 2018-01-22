@@ -6,7 +6,8 @@ NodeClass::NodeClass(ConfigClass *config) {
 }
 
 uint8_t NodeClass::setup() {
-	_config->getMQTTTopic(_pubTopic);
+	_config->getMQTTTopicRFID(_pubTopicRFID);
+	_config->getMQTTTopicHeartbeat(_pubTopicHeartbeat);	
 	_config->getMQTTClientId(_clientId);
 	_config->getMQTTUser(_user);
 	_config->getMQTTPass(_pass);	
@@ -15,6 +16,10 @@ uint8_t NodeClass::setup() {
 	char port[HUB_AP_MQTT_PORT_SIZE] = {0};
 	_config->getMQTTPort(port);
 	_port = atoi(port);
+
+	char tick[HUB_AP_MQTT_HBTICK_SIZE] = {0};
+	_config->getMQTTHeartbeatTick(tick);
+	_heartbeatTick = atoi(tick);
 
 	gen_random(_token, HUB_AP_CARD_SIZE);
 	gen_random(_subTopic, HUB_AP_MQTT_TOPIC_SIZE);
@@ -34,10 +39,10 @@ void NodeClass::preloop() {
 		Serial.println("MQTT Disconnected");
 	}
 	unsigned long now = millis();
-	// TODO customise frequency of heartbeat
-	if ( (now < _lastHeartbeat) || (now - _lastHeartbeat) > 1000 * 30 ) {
-		// TODO customise heartbeat topic
-		_mqtt.publish(HUB_AP_MQTT_HEARTBEAT, _clientId);
+	// customise frequency of heartbeat
+	if ((now < _lastHeartbeat) || (now - _lastHeartbeat) > 1000 * _heartbeatTick) {
+		// customise heartbeat topic
+		_mqtt.publish(_pubTopicHeartbeat, _clientId);
 		_lastHeartbeat = now;
 	}
 }
@@ -74,9 +79,9 @@ int NodeClass::card(char *uid, char *apid) {
 	root["token"] = _token;
 	String s;
 	root.printTo(s);
-	_mqtt.publish(_pubTopic, s.c_str());
+	_mqtt.publish(_pubTopicRFID, s.c_str());
 	Serial.print("Publish [");
-	Serial.print(_pubTopic);
+	Serial.print(_pubTopicRFID);
 	Serial.print("] => [");
 	Serial.print(s);
 	Serial.println("] ");
@@ -138,7 +143,7 @@ uint8_t NodeClass::_reconnect() {
 
 void NodeClass::debug() {
 	Serial.println(_port);
-	Serial.println(_pubTopic);
+	Serial.println(_pubTopicRFID);
 	Serial.println(_subTopic);
 	Serial.println(_token);
 	Serial.println(_addr);

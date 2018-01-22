@@ -56,10 +56,10 @@ form > div > input {
 			<div>
 				<label for="mqtttopichb">MQTT Heartbeat Topic</label>					
 				<input id="mqtttopichb" type="text" name="mqtt-topic-heartbeat" placeholder="MQTT Heartbeat Topic" maxlength="32" value="$MQTTTOPICHEARTBEAT$"> 	
-			</div>	
+			</div>
 			<div>
 				<label for="mqtthbtick">MQTT Heartbeat Tick (Seconds)</label>					
-				<input id="mqtthbtick" type="number" name="mqtt-heartbeat-tick" placeholder="MQTT Heartbeat Tick" min="1" value="$MQTTHEARTBEATTICK$"> 	
+				<input id="mqtthbtick" type="number" name="mqtt-heartbeat-tick" placeholder="MQTT Heartbeat Tick" min="1" max="86400" value="$MQTTHEARTBEATTICK$"> 	
 			</div>		
 			$CARD$
 			<button type="submit">Save</button>

@@ -30,6 +30,7 @@ void ConfigClass::load() {
 	LOAD(_mqttPass, HUB_AP_MQTT_PASS_OFFSET, HUB_AP_MQTT_PASS_SIZE);
 	LOAD(_mqttTopicRFID, HUB_AP_MQTT_TOPIC_RFID_OFFSET, HUB_AP_MQTT_TOPIC_SIZE);
 	LOAD(_mqttTopicHeartbeat, HUB_AP_MQTT_TOPIC_HEARTBEAT_OFFSET, HUB_AP_MQTT_TOPIC_SIZE);
+	LOAD(_mqttHeartbeatTick, HUB_AP_MQTT_HBTICK_OFFSET, HUB_AP_MQTT_HBTICK_SIZE);	
 	LOAD(_mqttClientId, HUB_AP_MQTT_CLIENTID_OFFSET, HUB_AP_MQTT_CLIENTID_SIZE);	
 
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
@@ -41,6 +42,10 @@ void ConfigClass::load() {
 	if (strlen(_mqttTopicHeartbeat) == 0) {
 		sprintf(_mqttTopicHeartbeat, HUB_AP_MQTT_TOPIC_HEARTBEAT);
 	}
+	if (strlen(_mqttHeartbeatTick) == 0) {
+		sprintf(_mqttHeartbeatTick, HUB_AP_MQTT_HBTICK_DEFAULT);
+	}
+
 	if (strlen(_mqttClientId) == 0) {
 		gen_random(_mqttClientId, HUB_AP_MQTT_CLIENTID_SIZE);
 	}
@@ -57,8 +62,8 @@ void ConfigClass::dump() {
 	DUMP(_mqttPass, HUB_AP_MQTT_PASS_OFFSET, HUB_AP_MQTT_PASS_SIZE);
 	DUMP(_mqttTopicRFID, HUB_AP_MQTT_TOPIC_RFID_OFFSET, HUB_AP_MQTT_TOPIC_SIZE);
 	DUMP(_mqttTopicHeartbeat, HUB_AP_MQTT_TOPIC_HEARTBEAT_OFFSET, HUB_AP_MQTT_TOPIC_SIZE);	
+	DUMP(_mqttHeartbeatTick, HUB_AP_MQTT_HBTICK_OFFSET, HUB_AP_MQTT_HBTICK_SIZE);		
 	DUMP(_mqttClientId, HUB_AP_MQTT_CLIENTID_OFFSET, HUB_AP_MQTT_CLIENTID_SIZE);
-
 
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 		DUMP(_card[i], HUB_AP_CARD_OFFSET + i * HUB_AP_CARD_SIZE, HUB_AP_CARD_SIZE);
@@ -106,6 +111,7 @@ SET(MQTTUser, mqttUser, HUB_AP_MQTT_USER_SIZE);
 SET(MQTTPass, mqttPass, HUB_AP_MQTT_PASS_SIZE);
 SET(MQTTTopicRFID, mqttTopicRFID, HUB_AP_MQTT_TOPIC_SIZE);
 SET(MQTTTopicHeartbeat, mqttTopicHeartbeat, HUB_AP_MQTT_TOPIC_SIZE);
+SET(MQTTHeartbeatTick, mqttHeartbeatTick, HUB_AP_MQTT_HBTICK_SIZE);	
 SET(MQTTClientId, mqttClientId, HUB_AP_MQTT_CLIENTID_SIZE);
 
 GET(SSID, wifiSSID);
@@ -116,6 +122,7 @@ GET(MQTTUser, mqttUser);
 GET(MQTTPass, mqttPass);
 GET(MQTTTopicRFID, mqttTopicRFID);
 GET(MQTTTopicHeartbeat, mqttTopicHeartbeat);
+GET(MQTTHeartbeatTick, mqttHeartbeatTick);	
 GET(MQTTClientId, mqttClientId);
 
 void ConfigClass::clean() {

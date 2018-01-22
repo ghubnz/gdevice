@@ -82,6 +82,8 @@ void SetupServiceClass::_handleRoot() {
 	page.replace("$MQTTTOPICRFID$", String(field));
 	_config->getMQTTTopicHeartbeat(field);
 	page.replace("$MQTTTOPICHEARTBEAT$", String(field));
+	_config->getMQTTHeartbeatTick(field);
+	page.replace("$MQTTHEARTBEATTICK$", String(field));	
 	_config->getMQTTClientId(field);
 	page.replace("$MQTTCLIENTID$", String(field));
 
@@ -102,6 +104,7 @@ void SetupServiceClass::_handlePost() {
 	_config->setMQTTPass(_server.arg("mqtt-pass").c_str());
 	_config->setMQTTTopicRFID(_server.arg("mqtt-topic-rfid").c_str());
 	_config->setMQTTTopicHeartbeat(_server.arg("mqtt-topic-heartbeat").c_str());	
+	_config->setMQTTHeartbeatTick(_server.arg("mqtt-heartbeat-tick").c_str());		
 	_config->setMQTTClientId(_server.arg("mqtt-client-id").c_str());
 	
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
