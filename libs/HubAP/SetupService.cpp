@@ -26,7 +26,7 @@ SETUP:
 	// if the configration is empty or setup button was pressed down
 	//start WiFi AP
 	WiFi.mode(WIFI_AP);
-	WiFi.disconnect();	
+	WiFi.disconnect();
 	WiFi.softAP(HUB_AP_WIFI_SSID, HUB_AP_WIFI_PASS);
 	IPAddress apIP = WiFi.softAPIP();
 	Serial.print("AP IP address: ");
@@ -62,7 +62,7 @@ void SetupServiceClass::_handleRoot() {
 		char card[HUB_AP_CARD_SIZE] = {0};
 		_config->getCard(i, card);
 		cards.replace("$NUM$", String(card));
-	}	
+	}
 	String page = String(HUB_AP_HTML_ROOT);
 	char field[HUB_AP_EEPROM_SIZE] = {0};
 	_config->getSSID(field);
@@ -83,18 +83,18 @@ void SetupServiceClass::_handleRoot() {
 	_config->getMQTTTopicHeartbeat(field);
 	page.replace("$MQTTTOPICHEARTBEAT$", String(field));
 	_config->getMQTTHeartbeatTick(field);
-	page.replace("$MQTTHEARTBEATTICK$", String(field));	
+	page.replace("$MQTTHEARTBEATTICK$", String(field));
 	_config->getMQTTClientId(field);
 	page.replace("$MQTTCLIENTID$", String(field));
 
-	page.replace("$CARD$", cards);	
+	page.replace("$CARD$", cards);
 	_server.send (200, "text/html", page);
 }
 
 void SetupServiceClass::_handlePost() {
 	Serial.println("Set handle");
 	_server.sendHeader("Location", "/");
-	_server.send (302, "text/plain", "Config updated...\n\n");	
+	_server.send (302, "text/plain", "Config updated...\n\n");
 
 	_config->setSSID(_server.arg("ssid").c_str());
 	_config->setPass(_server.arg("pass").c_str());
@@ -103,10 +103,10 @@ void SetupServiceClass::_handlePost() {
 	_config->setMQTTUser(_server.arg("mqtt-user").c_str());
 	_config->setMQTTPass(_server.arg("mqtt-pass").c_str());
 	_config->setMQTTTopicRFID(_server.arg("mqtt-topic-rfid").c_str());
-	_config->setMQTTTopicHeartbeat(_server.arg("mqtt-topic-heartbeat").c_str());	
-	_config->setMQTTHeartbeatTick(_server.arg("mqtt-heartbeat-tick").c_str());		
+	_config->setMQTTTopicHeartbeat(_server.arg("mqtt-topic-heartbeat").c_str());
+	_config->setMQTTHeartbeatTick(_server.arg("mqtt-heartbeat-tick").c_str());
 	_config->setMQTTClientId(_server.arg("mqtt-client-id").c_str());
-	
+
 	for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 		_config->setCard(i, _server.arg(String("card") + String(i)).c_str());
 	}

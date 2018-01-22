@@ -21,7 +21,7 @@ String redirectPage(String, String, String);
 class SetupServiceClass {
 	public:
 		SetupServiceClass(ConfigClass *);
-		
+
 		uint8_t setup();
 		uint8_t loop();
 	private:

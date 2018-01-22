@@ -7,10 +7,10 @@ NodeClass::NodeClass(ConfigClass *config) {
 
 uint8_t NodeClass::setup() {
 	_config->getMQTTTopicRFID(_pubTopicRFID);
-	_config->getMQTTTopicHeartbeat(_pubTopicHeartbeat);	
+	_config->getMQTTTopicHeartbeat(_pubTopicHeartbeat);
 	_config->getMQTTClientId(_clientId);
 	_config->getMQTTUser(_user);
-	_config->getMQTTPass(_pass);	
+	_config->getMQTTPass(_pass);
 	_config->getMQTTAddr(_addr);
 
 	char port[HUB_AP_MQTT_PORT_SIZE] = {0};
@@ -23,10 +23,10 @@ uint8_t NodeClass::setup() {
 
 	gen_random(_token, HUB_AP_CARD_SIZE);
 	gen_random(_subTopic, HUB_AP_MQTT_TOPIC_SIZE);
-	
+
 	_mqtt.setServer(_addr, _port);
 	_mqtt.setCallback([this](char* topic, byte* payload, unsigned int length){
-		_callback(topic, payload, length);		
+		_callback(topic, payload, length);	
 	});
 	return _reconnect();
 }
@@ -55,7 +55,7 @@ uint8_t NodeClass::loop() {
 	} else if (_finish == HUB_AP_STATE_DENY) {
 		_finish = HUB_AP_STATE_WAIT;
 		// TODO buzzer deny
-		return HUB_AP_STATE_DENY;	
+		return HUB_AP_STATE_DENY;
 	}
 	if (_retry > 600) {
 		_retry = 0;
@@ -96,7 +96,7 @@ void NodeClass::_callback(char* topic, byte* payload, unsigned int length) {
 		Serial.print((char)payload[i]);
 	}
 	Serial.println();
-	
+
 	char token[length + 1];
 	memcpy(token, payload, length);
 	token[length] = '\0';
@@ -115,7 +115,7 @@ uint8_t NodeClass::_reconnect() {
 			return HUB_AP_STATE_NONE;
 		}
 		Serial.printf("%s:%d ", _addr, _port);
-	
+
 		int r;
 		if (strlen(_user) == 0) {
 			r = _mqtt.connect(_clientId);

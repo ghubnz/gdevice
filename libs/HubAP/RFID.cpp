@@ -70,7 +70,7 @@ uint8_t RFIDClass::loop() {
 		for (int i = 0; i < HUB_AP_CARD_NUM; i ++) {
 			if (_config->matchCard(i, (char *)_rfid.uid.uidByte, _rfid.uid.size)) {
 				state = HUB_AP_STATE_ACCEPT;
-				CardState = HUB_AP_RFID_ADMIN;	
+				CardState = HUB_AP_RFID_ADMIN;
       			goto EXIT;
 	    	}
 		}
