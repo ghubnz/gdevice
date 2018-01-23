@@ -77,6 +77,7 @@ int NodeClass::card(char *uid, char *apid) {
   	root["uid"] = sprintHex(uid, strlen(uid));
 	root["topic"] = _subTopic;
 	root["token"] = _token;
+	root["device"] = _clientId;
 	String s;
 	root.printTo(s);
 	_mqtt.publish(_pubTopicRFID, s.c_str());
