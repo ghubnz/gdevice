@@ -20,7 +20,7 @@ uint8_t SetupServiceClass::setup() {
 			goto SETUP;
 		}
 		delay(200);
-	}
+	}	
 	return HUB_AP_STATE_NONE;
 SETUP:
 	// if the configration is empty or setup button was pressed down

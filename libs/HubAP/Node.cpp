@@ -28,6 +28,8 @@ uint8_t NodeClass::setup() {
 	_mqtt.setCallback([this](char* topic, byte* payload, unsigned int length){
 		_callback(topic, payload, length);	
 	});
+	// reset for buzzer
+	pinMode(HUB_AP_BUZZER, OUTPUT);
 	return _reconnect();
 }
 
@@ -50,17 +52,20 @@ void NodeClass::preloop() {
 uint8_t NodeClass::loop() {
 	if (_finish == HUB_AP_STATE_ACCEPT) {
 		_finish = HUB_AP_STATE_WAIT;
-		// TODO buzzer accept
+		// buzzer accept
+		_buzAccept();
 		return HUB_AP_STATE_ACCEPT;
 	} else if (_finish == HUB_AP_STATE_DENY) {
 		_finish = HUB_AP_STATE_WAIT;
-		// TODO buzzer deny
+		// buzzer deny
+		_buzDeny();
 		return HUB_AP_STATE_DENY;
 	}
 	if (_retry > 600) {
 		_retry = 0;
 		_finish = HUB_AP_STATE_WAIT;
-		// TODO buzzer timeout
+		// buzzer timeout
+		_buzTimeout();
 		return HUB_AP_STATE_TIMEOUT;
 	}
 	delay(50);
@@ -127,14 +132,16 @@ uint8_t NodeClass::_reconnect() {
 			Serial.println("connected");
 			_mqtt.subscribe(_subTopic);
 			_finish = HUB_AP_STATE_WAIT;
-			// TODO buzzer connected
+			// buzzer connected
+			_buzConnected();
 			return HUB_AP_STATE_NONE;
 		} else {
 			Serial.print("failed, rc=");
 			Serial.print(_mqtt.state());
 			Serial.println(" try again in 1 seconds");
 			// Wait 1 seconds before retrying
-			// TODO buzzer retrying
+			// buzzer retrying
+			_buzRetry();
 			delay(1000);
 		}
 	}
@@ -151,4 +158,48 @@ void NodeClass::debug() {
 	Serial.println(_user);
 	Serial.println(_pass);
 	Serial.println(_clientId);
+}
+
+void NodeClass::_buzAccept() {
+	tone(HUB_AP_BUZZER, NOTE_C, TONE_SPEED);
+	delay(TONE_SPEED);
+	tone(HUB_AP_BUZZER, NOTE_G, TONE_SPEED);
+	delay(TONE_SPEED);
+	tone(HUB_AP_BUZZER, NOTE_E, TONE_SPEED * 2);
+	delay(TONE_SPEED * 2);
+	noTone(HUB_AP_BUZZER);
+}
+
+void NodeClass::_buzDeny() {
+	tone(HUB_AP_BUZZER, NOTE_E, TONE_SPEED);
+	delay(TONE_SPEED);
+	tone(HUB_AP_BUZZER, NOTE_G, TONE_SPEED);
+	delay(TONE_SPEED);
+	tone(HUB_AP_BUZZER, NOTE_C, TONE_SPEED);
+	delay(TONE_SPEED);
+	noTone(HUB_AP_BUZZER);
+}
+
+void NodeClass::_buzTimeout() {
+	tone(HUB_AP_BUZZER, NOTE_E, TONE_SPEED);
+	delay(TONE_SPEED);
+	tone(HUB_AP_BUZZER, NOTE_G, TONE_SPEED);
+	delay(TONE_SPEED);
+	tone(HUB_AP_BUZZER, NOTE_E, TONE_SPEED);
+	delay(TONE_SPEED);
+	tone(HUB_AP_BUZZER, NOTE_G, TONE_SPEED);
+	delay(TONE_SPEED);	
+	noTone(HUB_AP_BUZZER);
+}
+
+void NodeClass::_buzConnected() {
+	tone(HUB_AP_BUZZER, NOTE_C, TONE_SPEED);
+	delay(TONE_SPEED);
+	noTone(HUB_AP_BUZZER);
+}
+
+void NodeClass::_buzRetry() {
+	tone(HUB_AP_BUZZER, NOTE_G, TONE_SPEED);
+	delay(TONE_SPEED);
+	noTone(HUB_AP_BUZZER);
 }

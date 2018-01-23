@@ -7,6 +7,16 @@
 #include <ArduinoJson.h>
 #include "Config.h"
 
+#define HUB_AP_BUZZER 5 // D3
+#define NOTE_C 262
+#define NOTE_D 294
+#define NOTE_E 330
+#define NOTE_F 349
+#define NOTE_G 392
+#define NOTE_A 440
+#define NOTE_B 494
+#define TONE_SPEED 200
+
 // Node class
 class NodeClass {
 	public:
@@ -38,5 +48,11 @@ class NodeClass {
 
 		void _callback(char* topic, byte* payload, unsigned int length);
 		uint8_t _reconnect();
+
+		void _buzAccept();
+		void _buzDeny();
+		void _buzTimeout();
+		void _buzConnected();
+		void _buzRetry();
 };
 #endif // HUB_AP_NODE
