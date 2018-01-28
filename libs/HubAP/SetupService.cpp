@@ -1,8 +1,11 @@
 #include "SetupService.h"
 
 // Public
-SetupServiceClass::SetupServiceClass(ConfigClass *config) {
+SetupServiceClass::SetupServiceClass() {
 	pinMode(HUB_AP_SETUP_BTN, INPUT);
+}
+
+void SetupServiceClass::init(ConfigClass *config) {
 	_config = config;
 }
 

@@ -20,7 +20,8 @@
 // Node class
 class NodeClass {
 	public:
-		NodeClass(ConfigClass *config);
+		NodeClass();
+		void init(ConfigClass *config);
 		
 		uint8_t setup();
 		uint8_t loop();

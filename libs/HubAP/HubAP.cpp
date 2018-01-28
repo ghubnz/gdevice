@@ -2,6 +2,9 @@
 // Public
 HubAPClass::HubAPClass() {
 	Config.load();
+	SetupService.init(&Config);
+	Node.init(&Config);
+	RFID.init(&Config, &Node);
 	// serial speed
 	Serial.begin(HUB_AP_SERIAL_SPEED);
 	while (!Serial) {;}

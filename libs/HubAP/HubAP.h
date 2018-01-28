@@ -28,9 +28,9 @@ class HubAPClass {
 		void reset();
 
 		ConfigClass Config;
-		SetupServiceClass SetupService = SetupServiceClass(&Config);
-		NodeClass Node = NodeClass(&Config);
-		RFIDClass RFID = RFIDClass(&Config, &Node);
+		SetupServiceClass SetupService;
+		NodeClass Node;
+		RFIDClass RFID;
 	private:
 		uint8_t _state = HUB_AP_STATE_NONE;
 		uint8_t _macAddr[6];

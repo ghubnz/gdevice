@@ -24,7 +24,8 @@
 // RFID class
 class RFIDClass {
 	public:
-		RFIDClass(ConfigClass*, NodeClass*);
+		RFIDClass();
+		void init(ConfigClass*, NodeClass*);
 		
 		uint8_t setup();
 		uint8_t loop();

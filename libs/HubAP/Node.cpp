@@ -1,7 +1,10 @@
 #include "Node.h"
 
 // Public
-NodeClass::NodeClass(ConfigClass *config) {
+NodeClass::NodeClass() {
+}
+
+void NodeClass::init(ConfigClass *config) {
 	_config = config;
 }
 
@@ -77,11 +80,11 @@ int NodeClass::card(char *uid, char *apid) {
 	if (_reconnect() == HUB_AP_STATE_ERROR) {
 		return HUB_AP_STATE_DENY;
 	}
-	StaticJsonBuffer<100> jsonBuffer;
+	StaticJsonBuffer<256> jsonBuffer;
 	JsonObject& root = jsonBuffer.createObject();
   	root["uid"] = sprintHex(uid, strlen(uid));
-	root["topic"] = _subTopic;
 	root["token"] = _token;
+	root["topic"] = _subTopic;
 	root["device"] = _clientId;
 	String s;
 	root.printTo(s);

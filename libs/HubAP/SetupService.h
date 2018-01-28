@@ -20,7 +20,8 @@ String redirectPage(String, String, String);
 // setup service class
 class SetupServiceClass {
 	public:
-		SetupServiceClass(ConfigClass *);
+		SetupServiceClass();
+		void init(ConfigClass *);
 
 		uint8_t setup();
 		uint8_t loop();
@@ -32,7 +33,7 @@ class SetupServiceClass {
 		void _handleReset();
 		void _handleDebug();
 
-		ESP8266WebServer _server = ESP8266WebServer();
+		ESP8266WebServer _server;
 		ConfigClass *_config;
 
 };

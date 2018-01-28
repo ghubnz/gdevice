@@ -1,8 +1,11 @@
 #include "RFID.h"
 
 // Public
-RFIDClass::RFIDClass(ConfigClass *config, NodeClass *node) {
+RFIDClass::RFIDClass() {
 	_rfid = MFRC522(HUB_AP_RFID_SS, HUB_AP_RFID_RST);
+}
+
+void RFIDClass::init(ConfigClass *config, NodeClass *node) {
 	_config = config;
 	_node = node;
 }
