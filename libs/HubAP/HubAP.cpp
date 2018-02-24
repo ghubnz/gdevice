@@ -66,6 +66,14 @@ uint8_t HubAPClass::loop(void *params ...) {
 		_state = Node.loop();
 		return _state;
 	}
+	switch(_state) {
+		case HUB_AP_STATE_ACCEPT:
+			Node.buzAccept();
+			break;
+		case HUB_AP_STATE_DENY:
+			Node.buzDeny();
+			break;
+	}
 	if (_states[_state] == NULL) {
 		_state = _states[HUB_AP_STATE_ERROR](_state, params);
 	}

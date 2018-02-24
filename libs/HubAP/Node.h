@@ -16,6 +16,7 @@
 #define NOTE_A 440
 #define NOTE_B 494
 #define TONE_SPEED 200
+#define HUB_AP_LED 15
 
 // Node class
 class NodeClass {
@@ -29,6 +30,9 @@ class NodeClass {
 
 		int card(char *uid, char *apid);
 		void debug();
+		void buzAccept();
+		void buzDeny();
+	
 	private:
 		ConfigClass *_config;
 		WiFiClientSecure _client;
@@ -50,8 +54,6 @@ class NodeClass {
 		void _callback(char* topic, byte* payload, unsigned int length);
 		uint8_t _reconnect();
 
-		void _buzAccept();
-		void _buzDeny();
 		void _buzTimeout();
 		void _buzConnected();
 		void _buzRetry();

@@ -33,6 +33,7 @@ uint8_t NodeClass::setup() {
 	});
 	// reset for buzzer
 	pinMode(HUB_AP_BUZZER, OUTPUT);
+	pinMode(HUB_AP_LED, OUTPUT);
 	return _reconnect();
 }
 
@@ -55,13 +56,9 @@ void NodeClass::preloop() {
 uint8_t NodeClass::loop() {
 	if (_finish == HUB_AP_STATE_ACCEPT) {
 		_finish = HUB_AP_STATE_WAIT;
-		// buzzer accept
-		_buzAccept();
 		return HUB_AP_STATE_ACCEPT;
 	} else if (_finish == HUB_AP_STATE_DENY) {
 		_finish = HUB_AP_STATE_WAIT;
-		// buzzer deny
-		_buzDeny();
 		return HUB_AP_STATE_DENY;
 	}
 	if (_retry > 600) {
@@ -163,46 +160,60 @@ void NodeClass::debug() {
 	Serial.println(_clientId);
 }
 
-void NodeClass::_buzAccept() {
+void NodeClass::buzAccept() {
 	tone(HUB_AP_BUZZER, NOTE_C, TONE_SPEED);
+	digitalWrite(HUB_AP_LED, HIGH);
 	delay(TONE_SPEED);
 	tone(HUB_AP_BUZZER, NOTE_G, TONE_SPEED);
+	digitalWrite(HUB_AP_LED, LOW);		
 	delay(TONE_SPEED);
 	tone(HUB_AP_BUZZER, NOTE_E, TONE_SPEED * 2);
+	digitalWrite(HUB_AP_LED, HIGH);		
 	delay(TONE_SPEED * 2);
 	noTone(HUB_AP_BUZZER);
+	digitalWrite(HUB_AP_LED, LOW);	
 }
 
-void NodeClass::_buzDeny() {
+void NodeClass::buzDeny() {
 	tone(HUB_AP_BUZZER, NOTE_E, TONE_SPEED);
+	digitalWrite(HUB_AP_LED, HIGH);	
 	delay(TONE_SPEED);
 	tone(HUB_AP_BUZZER, NOTE_G, TONE_SPEED);
 	delay(TONE_SPEED);
 	tone(HUB_AP_BUZZER, NOTE_C, TONE_SPEED);
 	delay(TONE_SPEED);
 	noTone(HUB_AP_BUZZER);
+	digitalWrite(HUB_AP_LED, LOW);	
 }
 
 void NodeClass::_buzTimeout() {
 	tone(HUB_AP_BUZZER, NOTE_E, TONE_SPEED);
+	digitalWrite(HUB_AP_LED, HIGH);	
 	delay(TONE_SPEED);
 	tone(HUB_AP_BUZZER, NOTE_G, TONE_SPEED);
 	delay(TONE_SPEED);
 	tone(HUB_AP_BUZZER, NOTE_E, TONE_SPEED);
+	digitalWrite(HUB_AP_LED, LOW);	
 	delay(TONE_SPEED);
 	tone(HUB_AP_BUZZER, NOTE_G, TONE_SPEED);
+	digitalWrite(HUB_AP_LED, HIGH);	
 	delay(TONE_SPEED);	
 	noTone(HUB_AP_BUZZER);
+	digitalWrite(HUB_AP_LED, LOW);	
 }
 
 void NodeClass::_buzConnected() {
 	tone(HUB_AP_BUZZER, NOTE_C, TONE_SPEED);
+	digitalWrite(HUB_AP_LED, HIGH);	
 	delay(TONE_SPEED);
 	noTone(HUB_AP_BUZZER);
+	digitalWrite(HUB_AP_LED, LOW);	
 }
 
 void NodeClass::_buzRetry() {
 	tone(HUB_AP_BUZZER, NOTE_G, TONE_SPEED);
+	digitalWrite(HUB_AP_LED, HIGH);	
 	delay(TONE_SPEED);
 	noTone(HUB_AP_BUZZER);
+	digitalWrite(HUB_AP_LED, LOW);	
 }
