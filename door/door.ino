@@ -10,11 +10,11 @@
 #define RELAY_PIN     16 // D2
 
 void relayOn() {
-	digitalWrite(RELAY_PIN, LOW);	
+	digitalWrite(RELAY_PIN, HIGH);
 }
 
 void relayOff() {
-	digitalWrite(RELAY_PIN, HIGH);
+	digitalWrite(RELAY_PIN, LOW);
 }
 
 void initRelay() {
